@@ -307,7 +307,7 @@ class RenderProgressBar extends RenderBox {
 
   static const double _minPreferredTrackHeight = 24.0;
 
-  // This value is the touch target, 48, multiplied by 3.
+  // This value is the touch target, 24, multiplied by 3.
   static const double _minPreferredTrackWidth = 72;
 
   @override
@@ -344,31 +344,12 @@ class RenderProgressBar extends RenderBox {
         (_collapsedThumbRadius * _controller.barValue) + (thumbDelta * _controller.thumbValue);
     _effectiveBarHeight = (barDelta * _controller.barValue) + collapsedBarHeight;
 
-    switch (_alignment) {
-      case ProgressBarAlignment.center:
-        size = _computeSizeForCenterAlignment();
-        break;
-      case ProgressBarAlignment.bottom:
-        size = _computeSizeForBottomAlignment();
-        break;
-      default:
-        size = _computeSizeForCenterAlignment();
-    }
+    size = _computeSize();
   }
 
-  Size _computeSizeForCenterAlignment() {
+  Size _computeSize() {
     final double thumbDiameter = _expandedThumbRadius * 2;
     final double maxHeight = max(_expandedBarHeight, thumbDiameter);
-
-    return Size(
-      (constraints.hasBoundedWidth) ? constraints.maxWidth : _minPreferredTrackWidth,
-      max(maxHeight, _minPreferredTrackHeight),
-    );
-  }
-
-  Size _computeSizeForBottomAlignment() {
-    final double thumbDiameter = _effectiveThumbRadius * 2;
-    final double maxHeight = max(_effectiveBarHeight, thumbDiameter);
 
     return Size(
       (constraints.hasBoundedWidth) ? constraints.maxWidth : _minPreferredTrackWidth,
