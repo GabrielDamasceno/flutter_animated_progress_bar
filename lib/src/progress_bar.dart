@@ -18,6 +18,9 @@ class ProgressBar extends LeafRenderObjectWidget {
   final double expandedBarHeight;
   final double expandedThumbRadius;
 
+  final double thumbGlowRadius;
+  final Color thumbGlowColor;
+
   final Color backgroundBarColor;
 
   final Color collapsedProgressBarColor;
@@ -47,6 +50,8 @@ class ProgressBar extends LeafRenderObjectWidget {
     this.collapsedThumbRadius = 8.0,
     this.expandedBarHeight = 7.0,
     this.expandedThumbRadius = 10.0,
+    this.thumbGlowRadius = 25.0,
+    this.thumbGlowColor = const Color(0x50FFFFFF),
     this.backgroundBarColor = Colors.grey,
     this.collapsedProgressBarColor = Colors.red,
     this.collapsedBufferedBarColor = const Color(0x36F44336),
@@ -76,6 +81,8 @@ class ProgressBar extends LeafRenderObjectWidget {
       collapsedThumbRadius: collapsedThumbRadius,
       expandedBarHeight: expandedBarHeight,
       expandedThumbRadius: expandedThumbRadius,
+      thumbGlowRadius: thumbGlowRadius,
+      thumbGlowColor: thumbGlowColor,
       backgroundBarColor: backgroundBarColor,
       collapsedProgressBarColor: collapsedProgressBarColor,
       collapsedBufferedBarColor: collapsedBufferedBarColor,
@@ -104,6 +111,8 @@ class ProgressBar extends LeafRenderObjectWidget {
       ..collapsedThumbRadius = collapsedThumbRadius
       ..expandedBarHeight = expandedBarHeight
       ..expandedThumbRadius = expandedThumbRadius
+      ..thumbGlowRadius = thumbGlowRadius
+      ..thumbGlowColor = thumbGlowColor
       ..backgroundBarColor = backgroundBarColor
       ..collapsedProgressBarColor = collapsedProgressBarColor
       ..collapsedBufferedBarColor = collapsedBufferedBarColor

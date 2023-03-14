@@ -38,6 +38,7 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
   late final Color _expandedProgressBarColor;
   late final Color _expandedBufferedBarColor;
   late final Color _expandedThumbColor;
+  late final Color _thumbGlowColor;
 
   @override
   void initState() {
@@ -62,6 +63,7 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
     _expandedProgressBarColor = Colors.pink;
     _expandedBufferedBarColor = Colors.green;
     _expandedThumbColor = Colors.teal;
+    _thumbGlowColor = Colors.white24;
   }
 
   @override
@@ -121,6 +123,7 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
                   _Color(label: 'Expanded progress bar', color: _expandedProgressBarColor),
                   _Color(label: 'Expanded buffered bar', color: _expandedBufferedBarColor),
                   _Color(label: 'Expanded thumb', color: _expandedThumbColor),
+                  _Color(label: 'Thumb glow', color: _thumbGlowColor),
                 ],
               ),
             ],
@@ -149,6 +152,7 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
                 expandedProgressBarColor: _expandedProgressBarColor,
                 expandedBufferedBarColor: _expandedBufferedBarColor,
                 expandedThumbColor: _expandedThumbColor,
+                thumbGlowColor: _thumbGlowColor,
                 onSeek: (value) => setState(() => _progress = value),
               ),
             ),

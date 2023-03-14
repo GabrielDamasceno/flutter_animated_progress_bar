@@ -23,6 +23,8 @@ class RenderProgressBar extends RenderBox {
     required double collapsedThumbRadius,
     required double expandedBarHeight,
     required double expandedThumbRadius,
+    required double thumbGlowRadius,
+    required Color thumbGlowColor,
     required Color backgroundBarColor,
     required Color expandedProgressBarColor,
     required Color expandedBufferedBarColor,
@@ -49,6 +51,8 @@ class RenderProgressBar extends RenderBox {
         _expandedProgressBarColor = expandedProgressBarColor,
         _expandedBufferedBarColor = expandedBufferedBarColor,
         _expandedThumbColor = expandedThumbColor,
+        _thumbGlowRadius = thumbGlowRadius,
+        _thumbGlowColor = thumbGlowColor,
         _collapsedProgressBarColor = collapsedProgressBarColor,
         _collapsedBufferedBarColor = collapsedBufferedBarColor,
         _collapsedThumbColor = collapsedThumbColor,
@@ -149,6 +153,24 @@ class RenderProgressBar extends RenderBox {
 
     _expandedThumbRadius = newValue;
     markNeedsLayout();
+  }
+
+  late double _thumbGlowRadius;
+  double get thumbGlowRadius => _thumbGlowRadius;
+  set thumbGlowRadius(double newValue) {
+    if (_thumbGlowRadius == newValue) return;
+
+    _thumbGlowRadius = newValue;
+    markNeedsPaint();
+  }
+
+  late Color _thumbGlowColor;
+  Color get thumbGlowColor => _thumbGlowColor;
+  set thumbGlowColor(Color newValue) {
+    if (_thumbGlowColor == newValue) return;
+
+    _thumbGlowColor = newValue;
+    markNeedsPaint();
   }
 
   late Color _backgroundBarColor;
@@ -368,8 +390,20 @@ class RenderProgressBar extends RenderBox {
   void paint(PaintingContext context, Offset offset) {
     _dyBar = _computeDyBar();
 
-    final Paint backgroundBarPaint = Paint()..color = backgroundBarColor;
+    _drawBackground(context.canvas);
+    _drawBuffered(context.canvas);
+    _drawProgress(context.canvas);
+    _drawThumb(context.canvas);
+  }
 
+  void _drawBackground(Canvas canvas) {
+    final Paint backgroundBarPaint = Paint()..color = backgroundBarColor;
+    final RRect backgroundRRect = _barRRect(width: size.width);
+
+    canvas.drawRRect(backgroundRRect, backgroundBarPaint);
+  }
+
+  void _drawBuffered(Canvas canvas) {
     final Paint bufferedBarPaint = Paint()
       ..color = _transformColor(
         _expandedBufferedBarColor,
@@ -377,25 +411,7 @@ class RenderProgressBar extends RenderBox {
         _controller.barValue,
       );
 
-    final Paint progressBarPaint = Paint()
-      ..color = _transformColor(
-        _expandedProgressBarColor,
-        _collapsedProgressBarColor,
-        _controller.barValue,
-      );
-
-    final Paint thumbPaint = Paint()
-      ..color = _transformColor(
-        _expandedThumbColor,
-        _collapsedThumbColor,
-        _controller.thumbValue,
-      );
-
-    final RRect backgroundRRect = _barRRect(width: size.width);
-    final RRect progressRRect = _barRRect(width: _durationToPosition(_progress, _total));
-
     late final RRect bufferedRRect;
-
     if (_buffered != null) {
       if (!showBufferedWhenCollapsed && _controller.barValue == 0.0) {
         bufferedRRect = RRect.zero;
@@ -406,11 +422,20 @@ class RenderProgressBar extends RenderBox {
       bufferedRRect = RRect.zero;
     }
 
-    context.canvas
-      ..drawRRect(backgroundRRect, backgroundBarPaint)
-      ..drawRRect(bufferedRRect, bufferedBarPaint)
-      ..drawRRect(progressRRect, progressBarPaint)
-      ..drawPath(_thumbPath(), thumbPaint);
+    canvas.drawRRect(bufferedRRect, bufferedBarPaint);
+  }
+
+  void _drawProgress(Canvas canvas) {
+    final Paint progressBarPaint = Paint()
+      ..color = _transformColor(
+        _expandedProgressBarColor,
+        _collapsedProgressBarColor,
+        _controller.barValue,
+      );
+
+    final RRect progressRRect = _barRRect(width: _durationToPosition(_progress, _total));
+
+    canvas.drawRRect(progressRRect, progressBarPaint);
   }
 
   RRect _barRRect({required double width}) {
@@ -433,21 +458,29 @@ class RenderProgressBar extends RenderBox {
     return RRect.fromRectAndCorners(rect);
   }
 
-  Path _thumbPath() {
+  void _drawThumb(Canvas canvas) {
+    final Paint thumbGlowPaint = Paint()..color = _thumbGlowColor;
+    final Paint thumbPaint = Paint()
+      ..color = _transformColor(
+        _expandedThumbColor,
+        _collapsedThumbColor,
+        _controller.thumbValue,
+      );
+
+    final double thumbPosition = (_isDragging) ? _dxThumb : _durationToPosition(_progress, total);
     final double dy = _dyBar + _effectiveBarHeight / 2;
-    final double dxCampled = clampDouble(
-      (_isDragging) ? _dxThumb : _durationToPosition(_progress, total),
+    final double dx = clampDouble(
+      thumbPosition,
       _effectiveThumbRadius,
       size.width - _effectiveThumbRadius,
     );
+    final Offset offset = Offset(dx, dy);
 
-    return Path()
-      ..addOval(
-        Rect.fromCircle(
-          center: Offset(dxCampled, dy),
-          radius: _effectiveThumbRadius,
-        ),
-      );
+    if (_isDragging && _thumbGlowRadius > 0.0) {
+      canvas.drawCircle(offset, _thumbGlowRadius * _controller.thumbValue, thumbGlowPaint);
+    }
+
+    canvas.drawCircle(offset, _effectiveThumbRadius, thumbPaint);
   }
 
   Color _transformColor(Color expanded, Color collapsed, double value) {
