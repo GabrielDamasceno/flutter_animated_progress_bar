@@ -77,7 +77,6 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
       appBar: AppBar(title: const Text('Playground')),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
-        physics: const ClampingScrollPhysics(),
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -223,25 +222,40 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
               );
             },
           ),
-          _Button(
-            label: 'Forward',
-            onPressed: () => _controller.forward(),
-          ),
-          _Button(
-            label: 'Expand bar',
-            onPressed: () => _controller.expandBar(),
-          ),
-          _Button(
-            label: 'Collapse bar',
-            onPressed: () => _controller.collapseBar(),
-          ),
-          _Button(
-            label: 'Expand thumb',
-            onPressed: () => _controller.expandThumb(),
-          ),
-          _Button(
-            label: 'Collapse thumb',
-            onPressed: () => _controller.collapseThumb(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _Button(
+                    label: 'Forward',
+                    onPressed: () => _controller.forward(),
+                  ),
+                  _Button(
+                    label: 'Expand bar',
+                    onPressed: () => _controller.expandBar(),
+                  ),
+                  _Button(
+                    label: 'Collapse bar',
+                    onPressed: () => _controller.collapseBar(),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  _Button(
+                    label: 'Expand thumb',
+                    onPressed: () => _controller.expandThumb(),
+                  ),
+                  _Button(
+                    label: 'Collapse thumb',
+                    onPressed: () => _controller.collapseThumb(),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
@@ -338,7 +352,7 @@ class _Tile extends StatelessWidget {
   }
 }
 
-class _Button extends StatefulWidget {
+class _Button extends StatelessWidget {
   final String label;
   final Future<void> Function() onPressed;
 
@@ -349,45 +363,15 @@ class _Button extends StatefulWidget {
   });
 
   @override
-  State<_Button> createState() => _ButtonState();
-}
-
-class _ButtonState extends State<_Button> {
-  late String elapsed;
-
-  @override
-  void initState() {
-    super.initState();
-
-    elapsed = '0';
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 150.0,
-          child: ElevatedButton(
-            child: Text(widget.label),
-            onPressed: () async {
-              final Stopwatch stopwatch = Stopwatch()..start();
-              await widget.onPressed.call();
-              stopwatch.stop();
-              setState(() => elapsed = stopwatch.elapsed.inMilliseconds.toString());
-            },
-          ),
+    return Align(
+      child: SizedBox(
+        width: 150.0,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          child: Text(label),
         ),
-        const SizedBox(width: 20.0),
-        SizedBox(
-          width: 100.0,
-          child: Text(
-            '$elapsed ms',
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

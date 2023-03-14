@@ -1,4 +1,6 @@
+import 'package:example/ui/audio_progress_bar_example.dart';
 import 'package:example/ui/playground_screen.dart';
+import 'package:example/ui/static_progress_bar_example.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,6 +16,14 @@ class HomeScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () => PlaygroundScreen.route(context),
               child: const Text('Playground'),
+            ),
+            ElevatedButton(
+              onPressed: () => StaticProgressBarExample.route(context),
+              child: const Text('Static Example'),
+            ),
+            ElevatedButton(
+              onPressed: () => AudioProgressBarExample.route(context),
+              child: const Text('Audio Example'),
             ),
           ],
         ),

@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   animated_progress_bar:
     path: ../
+  just_audio: ^0.9.31
+  rxdart: ^0.27.7
 
 
   # The following adds the Cupertino Icons font to your application.
