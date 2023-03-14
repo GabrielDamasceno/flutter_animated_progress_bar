@@ -248,12 +248,12 @@ class RenderProgressBar extends RenderBox {
     _isDragging = true;
 
     final double localPosition = _clampLocalPosition(details.localPosition.dx);
-    _progress = _positionToDuration(localPosition);
+    _dxThumb = localPosition;
 
     _controller.expandBar();
     _controller.expandThumb();
 
-    onChangeStart?.call(_progress);
+    onChangeStart?.call(_positionToDuration(_dxThumb));
 
     markNeedsPaint();
   }
@@ -268,8 +268,8 @@ class RenderProgressBar extends RenderBox {
   }
 
   void _onEndHorizontalRecognizer(DragEndDetails details) {
-    _progress = _positionToDuration(_dxThumb);
     _isDragging = false;
+    _progress = _positionToDuration(_dxThumb);
 
     _controller.forward();
     _controller.collapseThumb();
