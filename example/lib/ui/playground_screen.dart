@@ -93,9 +93,9 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _Duration(label: 'Expansion', duration: _controller.expansionDuration),
-                  _Duration(label: 'Hold', duration: _controller.holdDuration),
-                  _Duration(label: 'Thumb', duration: _controller.thumbDuration),
+                  _Duration(label: 'Bar duration', duration: _controller.barAnimationDuration),
+                  _Duration(label: 'Thumb duration', duration: _controller.thumbAnimationDuration),
+                  _Duration(label: 'Waiting duration', duration: _controller.waitingDuration),
                 ],
               ),
             ],
