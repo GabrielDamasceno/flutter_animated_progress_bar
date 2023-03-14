@@ -297,7 +297,7 @@ class RenderProgressBar extends RenderBox {
   }
 
   @override
-  bool get sizedByParent => false;
+  bool get sizedByParent => true;
 
   @override
   bool get isRepaintBoundary => true;
@@ -305,22 +305,22 @@ class RenderProgressBar extends RenderBox {
   late double _effectiveThumbRadius;
   late double _effectiveBarHeight;
 
-  static const double _minPreferredTrackHeight = 24.0;
+  static const double _minPreferredHeight = 24.0;
 
   // This value is the touch target, 24, multiplied by 3.
-  static const double _minPreferredTrackWidth = 72;
+  static const double _minPreferredWidth = 72;
 
   @override
-  double computeMinIntrinsicWidth(double height) => _minPreferredTrackWidth;
+  double computeMinIntrinsicWidth(double height) => _minPreferredWidth;
 
   @override
-  double computeMaxIntrinsicWidth(double height) => _minPreferredTrackWidth;
+  double computeMaxIntrinsicWidth(double height) => _minPreferredWidth;
 
   @override
-  double computeMinIntrinsicHeight(double width) => _minPreferredTrackHeight;
+  double computeMinIntrinsicHeight(double width) => _minPreferredHeight;
 
   @override
-  double computeMaxIntrinsicHeight(double width) => _minPreferredTrackHeight;
+  double computeMaxIntrinsicHeight(double width) => _minPreferredHeight;
 
   @override
   bool hitTestSelf(Offset position) => true;
@@ -337,23 +337,30 @@ class RenderProgressBar extends RenderBox {
 
   @override
   void performLayout() {
+    _computeEffectiveSizes();
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final Size desiredSize = _computeDesiredSize();
+    return constraints.constrain(desiredSize);
+  }
+
+  void _computeEffectiveSizes() {
     final double thumbDelta = (_expandedThumbRadius - _collapsedThumbRadius).abs();
     final double barDelta = (_expandedBarHeight - _collapsedBarHeight).abs();
-
     _effectiveThumbRadius =
         (_collapsedThumbRadius * _controller.barValue) + (thumbDelta * _controller.thumbValue);
     _effectiveBarHeight = (barDelta * _controller.barValue) + collapsedBarHeight;
-
-    size = _computeSize();
   }
 
-  Size _computeSize() {
+  Size _computeDesiredSize() {
     final double thumbDiameter = _expandedThumbRadius * 2;
     final double maxHeight = max(_expandedBarHeight, thumbDiameter);
 
     return Size(
-      (constraints.hasBoundedWidth) ? constraints.maxWidth : _minPreferredTrackWidth,
-      max(maxHeight, _minPreferredTrackHeight),
+      (constraints.hasBoundedWidth) ? constraints.maxWidth : _minPreferredWidth,
+      max(maxHeight, _minPreferredHeight),
     );
   }
 
