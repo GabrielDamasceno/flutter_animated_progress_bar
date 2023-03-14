@@ -1,6 +1,6 @@
-import 'package:animated_progress_bar/src/core/alignment.dart';
-import 'package:animated_progress_bar/src/core/controller.dart';
-import 'package:animated_progress_bar/src/core/rendering.dart';
+import 'package:animated_progress_bar/src/foundation/controller.dart';
+import 'package:animated_progress_bar/src/foundation/enums.dart';
+import 'package:animated_progress_bar/src/rendering/render_progress_bar.dart';
 import 'package:flutter/material.dart';
 
 class ProgressBar extends LeafRenderObjectWidget {

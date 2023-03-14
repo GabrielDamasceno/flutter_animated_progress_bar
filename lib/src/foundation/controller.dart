@@ -1,4 +1,4 @@
-import 'package:animated_progress_bar/src/core/simulation.dart';
+import 'package:animated_progress_bar/src/foundation/simulations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 

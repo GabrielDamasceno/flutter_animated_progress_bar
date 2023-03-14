@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:animated_progress_bar/src/core/alignment.dart';
-import 'package:animated_progress_bar/src/core/controller.dart';
+import 'package:animated_progress_bar/src/foundation/controller.dart';
+import 'package:animated_progress_bar/src/foundation/enums.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
