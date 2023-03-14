@@ -1,0 +1,4 @@
+enum ProgressBarAlignment {
+  center,
+  bottom,
+}
