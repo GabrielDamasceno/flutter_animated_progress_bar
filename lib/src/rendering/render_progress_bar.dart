@@ -19,6 +19,7 @@ class RenderProgressBar extends RenderBox {
     Duration? buffered,
     required Duration total,
     required ProgressBarAlignment alignment,
+    required BarCapShape barCapShape,
     required double collapsedBarHeight,
     required double collapsedThumbRadius,
     required double expandedBarHeight,
@@ -43,6 +44,7 @@ class RenderProgressBar extends RenderBox {
         _buffered = buffered,
         _total = total,
         _alignment = alignment,
+        _barCapShape = barCapShape,
         _collapsedBarHeight = collapsedBarHeight,
         _collapsedThumbRadius = collapsedThumbRadius,
         _expandedBarHeight = expandedBarHeight,
@@ -117,6 +119,15 @@ class RenderProgressBar extends RenderBox {
 
     _alignment = newValue;
     markNeedsLayout();
+  }
+
+  late BarCapShape _barCapShape;
+  BarCapShape get barCapShape => _barCapShape;
+  set barCapShape(BarCapShape newValue) {
+    if (_barCapShape == newValue) return;
+
+    _barCapShape = newValue;
+    markNeedsPaint();
   }
 
   late double _collapsedBarHeight;
@@ -440,22 +451,21 @@ class RenderProgressBar extends RenderBox {
 
   RRect _barRRect({required double width}) {
     final Rect rect = Rect.fromLTWH(0.0, _dyBar, width, _effectiveBarHeight);
-    final Radius radius = Radius.circular(_effectiveThumbRadius);
-    late final double dx;
+    final double thumbPosition = (_isDragging) ? _dxThumb : _durationToPosition(_progress, total);
+    late final Radius radius;
 
-    if (_isDragging) {
-      dx = _dxThumb;
+    if (_barCapShape == BarCapShape.round) {
+      radius = Radius.circular(_effectiveBarHeight / 2);
+      return RRect.fromRectAndRadius(rect, radius);
     } else {
-      dx = _durationToPosition(progress, total);
+      radius = Radius.circular(_effectiveThumbRadius);
+      if ((thumbPosition - _effectiveThumbRadius) <= 0) {
+        return RRect.fromRectAndCorners(rect, topLeft: radius, bottomLeft: radius);
+      } else if ((thumbPosition + _effectiveThumbRadius) >= size.width) {
+        return RRect.fromRectAndCorners(rect, topRight: radius, bottomRight: radius);
+      }
+      return RRect.fromRectAndCorners(rect);
     }
-
-    if ((dx - _effectiveThumbRadius) <= 0) {
-      return RRect.fromRectAndCorners(rect, topLeft: radius, bottomLeft: radius);
-    } else if ((dx + _effectiveThumbRadius) >= size.width) {
-      return RRect.fromRectAndCorners(rect, topRight: radius, bottomRight: radius);
-    }
-
-    return RRect.fromRectAndCorners(rect);
   }
 
   void _drawThumb(Canvas canvas) {

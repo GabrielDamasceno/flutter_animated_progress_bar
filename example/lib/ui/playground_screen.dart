@@ -30,6 +30,7 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
   late bool _showBufferedWhenCollapsed;
 
   late ProgressBarAlignment _alignment;
+  late BarCapShape _barCapShape;
 
   late final Color _backgroundBarColor;
   late final Color _collapsedProgressBarColor;
@@ -55,6 +56,7 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
     _showBufferedWhenCollapsed = true;
 
     _alignment = ProgressBarAlignment.center;
+    _barCapShape = BarCapShape.square;
 
     _backgroundBarColor = Colors.grey;
     _collapsedProgressBarColor = Colors.red;
@@ -142,7 +144,9 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
                 progress: _progress,
                 buffered: _buffered,
                 total: _total,
+                expandedBarHeight: 10.0,
                 alignment: _alignment,
+                barCapShape: _barCapShape,
                 lerpColorsTransition: _lerpColors,
                 showBufferedWhenCollapsed: _showBufferedWhenCollapsed,
                 backgroundBarColor: _backgroundBarColor,
@@ -168,6 +172,20 @@ class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProvider
                     .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
                     .toList(),
                 onChanged: (value) => setState(() => _alignment = value!),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Bar cap:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(width: 10.0),
+              DropdownButton(
+                value: _barCapShape,
+                items: BarCapShape.values
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+                    .toList(),
+                onChanged: (value) => setState(() => _barCapShape = value!),
               ),
             ],
           ),
