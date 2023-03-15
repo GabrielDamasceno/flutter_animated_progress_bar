@@ -192,4 +192,12 @@ class ProgressBarController extends ChangeNotifier {
 
     super.dispose();
   }
+
+  @override
+  String toString() {
+    return 'ProgressBarController -> '
+        'barAnimationDuration: ${barAnimationDuration.inMilliseconds}ms '
+        'thumbAnimationDuration: ${thumbAnimationDuration.inMilliseconds}ms '
+        'waitingDuration: ${waitingDuration.inMilliseconds}ms';
+  }
 }

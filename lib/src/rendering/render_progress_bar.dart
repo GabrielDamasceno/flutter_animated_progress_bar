@@ -356,6 +356,70 @@ class RenderProgressBar extends RenderBox {
   double computeMaxIntrinsicHeight(double width) => _minPreferredHeight;
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+
+    properties
+      ..add(StringProperty('controller', controller.toString()))
+      ..add(IntProperty('progress', _progress.inMilliseconds, unit: 'ms'))
+      ..add(IntProperty('buffered', _buffered?.inMilliseconds, unit: 'ms', ifNull: 'disabled'))
+      ..add(IntProperty('total', _total.inMilliseconds, unit: 'ms'))
+      ..add(EnumProperty('alignment', _alignment))
+      ..add(EnumProperty('barCapShape', _barCapShape))
+      ..add(DoubleProperty('collapsedBarHeight', _collapsedBarHeight))
+      ..add(DoubleProperty('collapsedThumbRadius', _collapsedThumbRadius))
+      ..add(DoubleProperty('expandedBarHeight', _expandedBarHeight))
+      ..add(DoubleProperty('expandedThumbRadius', _expandedThumbRadius))
+      ..add(DoubleProperty('thumbGlowRadius', _thumbGlowRadius))
+      ..add(ColorProperty('thumbGlowColor', _thumbGlowColor))
+      ..add(ColorProperty('backgroundBarColor', _backgroundBarColor))
+      ..add(ColorProperty('expandedProgressBarColor', _expandedProgressBarColor))
+      ..add(ColorProperty('expandedBufferedBarColor', _expandedBufferedBarColor))
+      ..add(ColorProperty('expandedThumbColor', _expandedThumbColor))
+      ..add(ColorProperty('collapsedProgressBarColor', _collapsedProgressBarColor))
+      ..add(ColorProperty('collapsedBufferedBarColor', _collapsedBufferedBarColor))
+      ..add(ColorProperty('collapsedThumbColor', _collapsedThumbColor))
+      ..add(DiagnosticsProperty<bool>('lerpColorsTransition', _lerpColorsTransition))
+      ..add(DiagnosticsProperty<bool>('showBufferedWhenCollapsed', _showBufferedWhenCollapsed))
+      ..add(
+        ObjectFlagProperty<ValueChanged<Duration>>(
+          'onSeek',
+          onSeek,
+          showName: true,
+          ifPresent: 'enabled',
+          ifNull: 'disabled',
+        ),
+      )
+      ..add(
+        ObjectFlagProperty<ValueChanged<Duration>>(
+          'onChanged',
+          onChanged,
+          showName: true,
+          ifPresent: 'enabled',
+          ifNull: 'disabled',
+        ),
+      )
+      ..add(
+        ObjectFlagProperty<ValueChanged<Duration>>(
+          'onChangeStart',
+          onChangeStart,
+          showName: true,
+          ifPresent: 'enabled',
+          ifNull: 'disabled',
+        ),
+      )
+      ..add(
+        ObjectFlagProperty<ValueChanged<Duration>>(
+          'onChangeEnd',
+          onChangeEnd,
+          showName: true,
+          ifPresent: 'enabled',
+          ifNull: 'disabled',
+        ),
+      );
+  }
+
+  @override
   bool hitTestSelf(Offset position) => true;
 
   @override
