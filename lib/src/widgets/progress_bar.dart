@@ -1,3 +1,4 @@
+import 'package:animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:animated_progress_bar/src/foundation/controller.dart';
 import 'package:animated_progress_bar/src/foundation/enums.dart';
 import 'package:animated_progress_bar/src/rendering/render_progress_bar.dart';
@@ -40,6 +41,8 @@ class ProgressBar extends LeafRenderObjectWidget {
   final ValueChanged<Duration>? onChangeStart;
   final ValueChanged<Duration>? onChangeEnd;
 
+  final SemanticsFormatter? semanticsFormatter;
+
   const ProgressBar({
     super.key,
     required this.controller,
@@ -67,6 +70,7 @@ class ProgressBar extends LeafRenderObjectWidget {
     this.onChanged,
     this.onChangeStart,
     this.onChangeEnd,
+    this.semanticsFormatter,
   })  : assert(total != Duration.zero),
         assert(expandedBarHeight >= collapsedBarHeight),
         assert(expandedThumbRadius >= collapsedThumbRadius);
@@ -99,6 +103,7 @@ class ProgressBar extends LeafRenderObjectWidget {
       onChanged: onChanged,
       onChangeStart: onChangeStart,
       onChangeEnd: onChangeEnd,
+      semanticsFormatter: semanticsFormatter,
     );
   }
 
@@ -125,6 +130,7 @@ class ProgressBar extends LeafRenderObjectWidget {
       ..expandedBufferedBarColor = expandedBufferedBarColor
       ..expandedThumbColor = expandedThumbColor
       ..lerpColorsTransition = lerpColorsTransition
-      ..showBufferedWhenCollapsed = showBufferedWhenCollapsed;
+      ..showBufferedWhenCollapsed = showBufferedWhenCollapsed
+      ..semanticsFormatter = semanticsFormatter;
   }
 }

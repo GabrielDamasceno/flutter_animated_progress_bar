@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:animated_progress_bar/src/foundation/controller.dart';
 import 'package:animated_progress_bar/src/foundation/enums.dart';
 import 'package:flutter/foundation.dart';
@@ -39,6 +40,7 @@ class RenderProgressBar extends RenderBox {
     this.onChanged,
     this.onChangeStart,
     this.onChangeEnd,
+    SemanticsFormatter? semanticsFormatter,
   })  : _controller = controller,
         _progress = progress,
         _buffered = buffered,
@@ -59,7 +61,8 @@ class RenderProgressBar extends RenderBox {
         _collapsedBufferedBarColor = collapsedBufferedBarColor,
         _collapsedThumbColor = collapsedThumbColor,
         _lerpColorsTransition = lerpColorsTransition,
-        _showBufferedWhenCollapsed = showBufferedWhenCollapsed {
+        _showBufferedWhenCollapsed = showBufferedWhenCollapsed,
+        _semanticsFormatter = semanticsFormatter {
     _horizontalDragGestureRecognizer = HorizontalDragGestureRecognizer()
       ..onStart = _onStartHorizontalRecognizer
       ..onEnd = _onEndHorizontalRecognizer
@@ -265,6 +268,15 @@ class RenderProgressBar extends RenderBox {
     markNeedsPaint();
   }
 
+  late SemanticsFormatter? _semanticsFormatter;
+  SemanticsFormatter? get semanticsFormatter => _semanticsFormatter;
+  set semanticsFormatter(SemanticsFormatter? newValue) {
+    if (_semanticsFormatter == newValue) return;
+
+    _semanticsFormatter = newValue;
+    markNeedsSemanticsUpdate();
+  }
+
   @override
   void attach(covariant PipelineOwner owner) {
     super.attach(owner);
@@ -420,6 +432,70 @@ class RenderProgressBar extends RenderBox {
   }
 
   @override
+  void describeSemanticsConfiguration(SemanticsConfiguration config) {
+    super.describeSemanticsConfiguration(config);
+
+    config
+      ..textDirection = TextDirection.ltr
+      ..label = 'Progress bar'
+      ..onIncrease = _increaseAction
+      ..onDecrease = _decreaseAction;
+
+    if (_semanticsFormatter != null) {
+      config
+        ..value = _semanticsFormatter!(_progressValue(_progress, _total))
+        ..increasedValue = semanticsFormatter!(
+          clampDouble(_progressValue(_progress, _total) + _semanticsActionUnit, 0.0, 1.0),
+        )
+        ..decreasedValue = semanticsFormatter!(
+          clampDouble(_progressValue(_progress, _total) - _semanticsActionUnit, 0.0, 1.0),
+        );
+    } else {
+      config
+        ..value = '${(_progressValue(_progress, _total) * 100).round()}%'
+        ..increasedValue =
+            '${(clampDouble(_progressValue(_progress, _total) + _semanticsActionUnit, 0.0, 1.0) * 100).round()}%'
+        ..decreasedValue =
+            '${(clampDouble(_progressValue(_progress, _total) - _semanticsActionUnit, 0.0, 1.0) * 100).round()}%';
+    }
+  }
+
+  void _increaseAction() {
+    final double value = clampDouble(
+      _progressValue(_progress, _total) + _semanticsActionUnit,
+      0.0,
+      1.0,
+    );
+
+    _progress = Duration(microseconds: (value * _total.inMicroseconds).round());
+
+    onChanged?.call(_progress);
+    onSeek.call(_progress);
+
+    markNeedsPaint();
+    markNeedsSemanticsUpdate();
+  }
+
+  void _decreaseAction() {
+    final double value = clampDouble(
+      _progressValue(_progress, _total) - _semanticsActionUnit,
+      0.0,
+      1.0,
+    );
+
+    _progress = Duration(microseconds: (value * _total.inMicroseconds).round());
+
+    onChanged?.call(_progress);
+    onSeek.call(_progress);
+
+    markNeedsPaint();
+    markNeedsSemanticsUpdate();
+  }
+
+  /// Matches Android implementation of material slider.
+  static const double _semanticsActionUnit = 0.05;
+
+  @override
   bool hitTestSelf(Offset position) => true;
 
   @override
@@ -463,6 +539,7 @@ class RenderProgressBar extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
+    if (!_isDragging) _dxThumb = _durationToPosition(_progress, total);
     _dyBar = _computeDyBar();
 
     _drawBackground(context.canvas);
@@ -515,7 +592,6 @@ class RenderProgressBar extends RenderBox {
 
   RRect _barRRect({required double width}) {
     final Rect rect = Rect.fromLTWH(0.0, _dyBar, width, _effectiveBarHeight);
-    final double thumbPosition = (_isDragging) ? _dxThumb : _durationToPosition(_progress, total);
     late final Radius radius;
 
     if (_barCapShape == BarCapShape.round) {
@@ -523,9 +599,9 @@ class RenderProgressBar extends RenderBox {
       return RRect.fromRectAndRadius(rect, radius);
     } else {
       radius = Radius.circular(_effectiveThumbRadius);
-      if ((thumbPosition - _effectiveThumbRadius) <= 0) {
+      if ((_dxThumb - _effectiveThumbRadius) <= 0) {
         return RRect.fromRectAndCorners(rect, topLeft: radius, bottomLeft: radius);
-      } else if ((thumbPosition + _effectiveThumbRadius) >= size.width) {
+      } else if ((_dxThumb + _effectiveThumbRadius) >= size.width) {
         return RRect.fromRectAndCorners(rect, topRight: radius, bottomRight: radius);
       }
       return RRect.fromRectAndCorners(rect);
@@ -541,10 +617,9 @@ class RenderProgressBar extends RenderBox {
         _controller.thumbValue,
       );
 
-    final double thumbPosition = (_isDragging) ? _dxThumb : _durationToPosition(_progress, total);
     final double dy = _dyBar + _effectiveBarHeight / 2;
     final double dx = clampDouble(
-      thumbPosition,
+      _dxThumb,
       _effectiveThumbRadius,
       size.width - _effectiveThumbRadius,
     );
@@ -596,8 +671,12 @@ class RenderProgressBar extends RenderBox {
     return dy;
   }
 
+  double _progressValue(Duration progress, Duration total) {
+    return progress.inMicroseconds / total.inMicroseconds;
+  }
+
   double _durationToPosition(Duration progress, Duration total) {
-    final double value = progress.inMicroseconds / total.inMicroseconds;
+    final double value = _progressValue(progress, total);
     return clampDouble(value * size.width, 0.0, size.width);
   }
 
