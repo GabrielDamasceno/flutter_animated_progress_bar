@@ -110,10 +110,11 @@ class ProgressBarController extends ChangeNotifier {
   }
 
   TickerFuture expandBar() {
-    stopBarAnimation();
-
     const double begin = 0.0;
     const double end = 1.0;
+
+    stopBarAnimation();
+    if (_barValue == end) return TickerFuture.complete();
 
     _barSimulation = InterpolationSimulation(
       begin: _barValue,
@@ -125,10 +126,11 @@ class ProgressBarController extends ChangeNotifier {
   }
 
   TickerFuture collapseBar() {
-    stopBarAnimation();
-
     const double begin = 1.0;
     const double end = 0.0;
+
+    stopBarAnimation();
+    if (_barValue == end) return TickerFuture.complete();
 
     _barSimulation = InterpolationSimulation(
       begin: _barValue,
@@ -140,10 +142,11 @@ class ProgressBarController extends ChangeNotifier {
   }
 
   TickerFuture expandThumb() {
-    stopThumbAnimation();
-
     const double begin = 0.0;
     const double end = 1.0;
+
+    stopThumbAnimation();
+    if (_thumbValue == end) return TickerFuture.complete();
 
     _thumbSimulation = InterpolationSimulation(
       begin: _thumbValue,
@@ -155,10 +158,11 @@ class ProgressBarController extends ChangeNotifier {
   }
 
   TickerFuture collapseThumb() {
-    stopThumbAnimation();
-
     const double begin = 1.0;
     const double end = 0.0;
+
+    stopThumbAnimation();
+    if (_thumbValue == end) return TickerFuture.complete();
 
     _thumbSimulation = InterpolationSimulation(
       begin: _thumbValue,
