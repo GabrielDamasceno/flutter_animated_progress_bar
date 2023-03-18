@@ -550,7 +550,7 @@ class RenderProgressBar extends RenderBox {
 
   void _drawBackground(Canvas canvas) {
     final Paint backgroundBarPaint = Paint()..color = backgroundBarColor;
-    final RRect backgroundRRect = _barRRect(width: size.width);
+    final RRect backgroundRRect = _barRRect(width: size.width, roundBarAtThumbEdge: true);
 
     canvas.drawRRect(backgroundRRect, backgroundBarPaint);
   }
@@ -590,22 +590,23 @@ class RenderProgressBar extends RenderBox {
     canvas.drawRRect(progressRRect, progressBarPaint);
   }
 
-  RRect _barRRect({required double width}) {
+  RRect _barRRect({required double width, bool roundBarAtThumbEdge = false}) {
     final Rect rect = Rect.fromLTWH(0.0, _dyThumb, width, _effectiveBarHeight);
     late final Radius radius;
 
     if (_barCapShape == BarCapShape.round) {
       radius = Radius.circular(_effectiveBarHeight / 2);
       return RRect.fromRectAndRadius(rect, radius);
-    } else {
+    } else if (_barCapShape == BarCapShape.square && roundBarAtThumbEdge) {
       radius = Radius.circular(_effectiveThumbRadius);
       if ((_dxThumb - _effectiveThumbRadius) <= 0) {
         return RRect.fromRectAndCorners(rect, topLeft: radius, bottomLeft: radius);
       } else if ((_dxThumb + _effectiveThumbRadius) >= size.width) {
         return RRect.fromRectAndCorners(rect, topRight: radius, bottomRight: radius);
       }
-      return RRect.fromRectAndCorners(rect);
     }
+
+    return RRect.fromRectAndCorners(rect);
   }
 
   void _drawThumb(Canvas canvas) {
