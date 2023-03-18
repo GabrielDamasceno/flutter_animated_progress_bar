@@ -191,6 +191,9 @@ class ProgressBarController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _barSimulation = null;
+    _thumbSimulation = null;
+
     _thumbTicker.dispose();
     _barTicker.dispose();
 
