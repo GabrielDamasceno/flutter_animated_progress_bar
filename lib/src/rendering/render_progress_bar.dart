@@ -75,7 +75,7 @@ class RenderProgressBar extends RenderBox {
 
   late bool _isDragging = false;
   late double _dxThumb = 0.0;
-  late double _dyBar = 0.0;
+  late double _dyThumb = 0.0;
 
   late ProgressBarController _controller;
   ProgressBarController get controller => _controller;
@@ -540,7 +540,7 @@ class RenderProgressBar extends RenderBox {
   @override
   void paint(PaintingContext context, Offset offset) {
     if (!_isDragging) _dxThumb = _durationToPosition(_progress, total);
-    _dyBar = _computeDyBar();
+    _dyThumb = _computeDyThumb();
 
     _drawBackground(context.canvas);
     _drawBuffered(context.canvas);
@@ -591,7 +591,7 @@ class RenderProgressBar extends RenderBox {
   }
 
   RRect _barRRect({required double width}) {
-    final Rect rect = Rect.fromLTWH(0.0, _dyBar, width, _effectiveBarHeight);
+    final Rect rect = Rect.fromLTWH(0.0, _dyThumb, width, _effectiveBarHeight);
     late final Radius radius;
 
     if (_barCapShape == BarCapShape.round) {
@@ -617,7 +617,7 @@ class RenderProgressBar extends RenderBox {
         _controller.thumbValue,
       );
 
-    final double dy = _dyBar + _effectiveBarHeight / 2;
+    final double dy = _dyThumb + _effectiveBarHeight / 2;
     final double dx = clampDouble(
       _dxThumb,
       _effectiveThumbRadius,
@@ -648,31 +648,29 @@ class RenderProgressBar extends RenderBox {
     return Color.lerp(collapsed, expanded, t) ?? expanded;
   }
 
-  double _computeDyBar() {
+  double _computeDyThumb() {
     late final double dy;
     final double thumbDiameter = _effectiveThumbRadius * 2;
 
-    switch (_alignment) {
-      case ProgressBarAlignment.center:
-        dy = (size.height / 2) - (_effectiveBarHeight / 2);
-        break;
-      case ProgressBarAlignment.bottom:
-        if (thumbDiameter > _effectiveBarHeight) {
-          dy =
-              size.height - _effectiveBarHeight - (_effectiveThumbRadius - _effectiveBarHeight / 2);
-        } else {
-          dy = size.height - _effectiveBarHeight;
-        }
-        break;
-      default:
-        dy = (size.height / 2) - (_effectiveBarHeight / 2);
+    if (_alignment == ProgressBarAlignment.bottom) {
+      if (thumbDiameter > _effectiveBarHeight) {
+        dy = size.height - _effectiveBarHeight - (_effectiveThumbRadius - _effectiveBarHeight / 2);
+      } else {
+        dy = size.height - _effectiveBarHeight;
+      }
+    } else {
+      dy = (size.height / 2) - (_effectiveBarHeight / 2);
     }
 
     return dy;
   }
 
   double _progressValue(Duration progress, Duration total) {
-    return progress.inMicroseconds / total.inMicroseconds;
+    if (total > Duration.zero) {
+      return progress.inMicroseconds / total.inMicroseconds;
+    }
+
+    return 0.0;
   }
 
   double _durationToPosition(Duration progress, Duration total) {

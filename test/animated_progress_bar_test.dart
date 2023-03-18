@@ -22,6 +22,39 @@ void main() {
     },
   );
 
+  testWidgets(
+    'Should be able to handle total when duration == Duration.zero',
+    (WidgetTester tester) async {
+      final ProgressBarController controller = ProgressBarController(vsync: const TestVSync());
+      Duration progress = Duration.zero;
+
+      await tester.pumpWidget(
+        StatefulBuilder(
+          builder: (context, setState) {
+            return ProgressBar(
+              controller: controller,
+              progress: progress,
+              total: Duration.zero,
+              onSeek: (value) {
+                setState(() => progress = value);
+              },
+            );
+          },
+        ),
+      );
+
+      final Finder finder = find.byType(ProgressBar);
+      final Offset center = tester.getCenter(finder);
+      expect(finder, findsOneWidget);
+
+      await tester.tapAt(center);
+      await tester.pump();
+      expect(progress.inSeconds, equals(0));
+
+      controller.dispose();
+    },
+  );
+
   group('Gesture tests:', () {
     testWidgets('Tap gesture can change its progress', (WidgetTester tester) async {
       final ProgressBarController controller = ProgressBarController(vsync: const TestVSync());

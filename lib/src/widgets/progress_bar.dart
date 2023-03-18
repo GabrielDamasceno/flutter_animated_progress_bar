@@ -71,8 +71,7 @@ class ProgressBar extends LeafRenderObjectWidget {
     this.onChangeStart,
     this.onChangeEnd,
     this.semanticsFormatter,
-  })  : assert(total != Duration.zero),
-        assert(expandedBarHeight >= collapsedBarHeight),
+  })  : assert(expandedBarHeight >= collapsedBarHeight),
         assert(expandedThumbRadius >= collapsedThumbRadius);
 
   @override
