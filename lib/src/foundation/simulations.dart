@@ -1,14 +1,23 @@
 import 'dart:ui' show clampDouble;
 import 'package:flutter/physics.dart' show Simulation, Tolerance;
 
+/// A base class that describe a simulation that have a finite duration.
+/// We expose [totalDuration] in order to handle a well-known limit.
+
 abstract class FiniteSimulation extends Simulation {
+  /// The time at which the simulation should be finished.
   int get totalDuration;
 }
 
+/// A simulation that linearly interpolates between two values given a time.
 class InterpolationSimulation extends FiniteSimulation {
+  /// The initial value of [x].
   final double begin;
+
+  /// The final value of [x].
   final double end;
 
+  /// Creates an [InterpolationSimulation] that linearly interpolates from [begin] to [end] given a time.
   InterpolationSimulation({
     required this.begin,
     required this.end,
@@ -44,9 +53,13 @@ class InterpolationSimulation extends FiniteSimulation {
   int get totalDuration => _totalDurationInMicroseconds;
 }
 
+/// A simulation that combines other simulations.
 class CombinedSimulation extends Simulation {
+  /// The [FiniteSimulation]s to be combined.
+  /// The order defines the sequence of simulations given the sum of all [totalDuration]s.
   final List<FiniteSimulation> simulations;
 
+  /// Creates an [CombinedSimulation] that combines a list of [FiniteSimulation]s.
   CombinedSimulation({required this.simulations}) : assert(simulations.isNotEmpty) {
     currentIndex = 0;
     timeOffset = 0.0;
