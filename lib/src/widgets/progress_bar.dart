@@ -60,7 +60,7 @@ class ProgressBar extends LeafRenderObjectWidget {
   ///
   /// * [progress] is the length of time of the current progress. It is required and must not be null.
   ///
-  /// * [total] is the total length of time.
+  /// * [total] is the total length of time. It is required and must not be null.
   ///
   /// * [onSeek] is the callback that can be used to seek. It is called when the user taps or
   /// at the end of a drag. It is required and must not be null.
