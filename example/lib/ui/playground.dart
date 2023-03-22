@@ -3,22 +3,22 @@
 import 'package:animated_progress_bar/animated_progress_bar.dart';
 import 'package:flutter/material.dart';
 
-class PlaygroundScreen extends StatefulWidget {
-  const PlaygroundScreen({super.key});
+class Playground extends StatefulWidget {
+  const Playground({super.key});
 
   @override
-  State<PlaygroundScreen> createState() => _PlaygroundScreenState();
+  State<Playground> createState() => _PlaygroundState();
 
   static Future<void> route(BuildContext context) async {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const PlaygroundScreen(),
+        builder: (context) => const Playground(),
       ),
     );
   }
 }
 
-class _PlaygroundScreenState extends State<PlaygroundScreen> with TickerProviderStateMixin {
+class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
   late final ProgressBarController _controller;
 
   late Duration _progress;

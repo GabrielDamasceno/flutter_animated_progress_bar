@@ -1,27 +1,26 @@
 import 'package:animated_progress_bar/animated_progress_bar.dart';
+import 'package:example/extensions/formatted_time.dart';
+import 'package:example/models/position_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AudioProgressBarExample extends StatefulWidget {
-  const AudioProgressBarExample({super.key});
+class AudioExample extends StatefulWidget {
+  const AudioExample({super.key});
 
   @override
-  State<AudioProgressBarExample> createState() => _AudioProgressBarExampleState();
+  State<AudioExample> createState() => _AudioExampleState();
 
   static Future<void> route(BuildContext context) async {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const AudioProgressBarExample(),
+        builder: (context) => const AudioExample(),
       ),
     );
   }
 }
 
-class _AudioProgressBarExampleState extends State<AudioProgressBarExample>
-    with TickerProviderStateMixin {
+class _AudioExampleState extends State<AudioExample> with TickerProviderStateMixin {
   late final AudioPlayer _player;
   late final ProgressBarController _progressBarController;
 
@@ -53,42 +52,44 @@ class _AudioProgressBarExampleState extends State<AudioProgressBarExample>
             StreamBuilder<PlayerState>(
               stream: _player.playerStateStream,
               builder: (context, snapshot) {
-                final playerState = snapshot.data;
-                final processingState = playerState?.processingState;
-                final playing = playerState?.playing;
+                final PlayerState? playerState = snapshot.data;
+                final ProcessingState? processingState = playerState?.processingState;
+                final bool? playing = playerState?.playing;
+
                 if (processingState == ProcessingState.loading ||
                     processingState == ProcessingState.buffering) {
                   return Container(
                     margin: const EdgeInsets.all(8.0),
-                    width: 64.0,
-                    height: 64.0,
+                    width: 32.0,
+                    height: 32.0,
                     child: const CircularProgressIndicator(),
                   );
                 } else if (playing != true) {
                   return IconButton(
                     icon: const Icon(Icons.play_arrow),
-                    iconSize: 64.0,
+                    iconSize: 32.0,
                     onPressed: _player.play,
                   );
                 } else if (processingState != ProcessingState.completed) {
                   return IconButton(
                     icon: const Icon(Icons.pause),
-                    iconSize: 64.0,
+                    iconSize: 32.0,
                     onPressed: _player.pause,
                   );
                 } else {
                   return IconButton(
                     icon: const Icon(Icons.replay),
-                    iconSize: 64.0,
+                    iconSize: 32.0,
                     onPressed: () => _player.seek(Duration.zero),
                   );
                 }
               },
             ),
+            const SizedBox(height: 10.0),
             StreamBuilder<PositionData>(
               stream: _positionDataStream,
               builder: (context, snapshot) {
-                final positionData = snapshot.data;
+                final PositionData? positionData = snapshot.data;
                 final Duration progress = positionData?.position ?? Duration.zero;
                 final Duration buffered = positionData?.bufferedPosition ?? Duration.zero;
                 final Duration total = positionData?.duration ?? Duration.zero;
@@ -103,9 +104,15 @@ class _AudioProgressBarExampleState extends State<AudioProgressBarExample>
                       total: total,
                       onSeek: _player.seek,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text('$progress'), Text('$total')],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(progress.formatToTime()),
+                          Text(total.formatToTime()),
+                        ],
+                      ),
                     ),
                   ],
                 );
@@ -124,12 +131,4 @@ class _AudioProgressBarExampleState extends State<AudioProgressBarExample>
           _player.durationStream,
           (position, bufferedPosition, duration) =>
               PositionData(position, bufferedPosition, duration ?? Duration.zero));
-}
-
-class PositionData {
-  final Duration position;
-  final Duration bufferedPosition;
-  final Duration duration;
-
-  PositionData(this.position, this.bufferedPosition, this.duration);
 }

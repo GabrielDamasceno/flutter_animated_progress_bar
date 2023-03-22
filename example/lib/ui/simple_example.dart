@@ -1,23 +1,22 @@
 import 'package:animated_progress_bar/animated_progress_bar.dart';
 import 'package:flutter/material.dart';
 
-class StaticProgressBarExample extends StatefulWidget {
-  const StaticProgressBarExample({super.key});
+class SimpleExample extends StatefulWidget {
+  const SimpleExample({super.key});
 
   @override
-  State<StaticProgressBarExample> createState() => _StaticProgressBarExampleState();
+  State<SimpleExample> createState() => _SimpleExampleState();
 
   static Future<void> route(BuildContext context) async {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const StaticProgressBarExample(),
+        builder: (context) => const SimpleExample(),
       ),
     );
   }
 }
 
-class _StaticProgressBarExampleState extends State<StaticProgressBarExample>
-    with TickerProviderStateMixin {
+class _SimpleExampleState extends State<SimpleExample> with TickerProviderStateMixin {
   late final ProgressBarController _controller1;
   late final ProgressBarController _controller2;
 
@@ -40,7 +39,7 @@ class _StaticProgressBarExampleState extends State<StaticProgressBarExample>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Static Example')),
+      appBar: AppBar(title: const Text('Simple Example')),
       body: ListView(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.symmetric(vertical: 15.0),

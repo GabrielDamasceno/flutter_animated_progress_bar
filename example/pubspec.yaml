@@ -33,6 +33,7 @@ dependencies:
   animated_progress_bar:
     path: ../
   just_audio: ^0.9.31
+  video_player: ^2.6.0
   rxdart: ^0.27.7
 
 
