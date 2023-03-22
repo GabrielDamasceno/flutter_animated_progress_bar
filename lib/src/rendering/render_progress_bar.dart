@@ -353,7 +353,7 @@ class RenderProgressBar extends RenderBox {
   static const double _minPreferredHeight = 24.0;
 
   // This value is the touch target, 24, multiplied by 3.
-  static const double _minPreferredWidth = 72;
+  static const double _minPreferredWidth = 72.0;
 
   @override
   double computeMinIntrinsicWidth(double height) => _minPreferredWidth;

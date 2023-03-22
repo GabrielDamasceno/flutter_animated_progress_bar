@@ -13,7 +13,7 @@ import 'package:flutter/scheduler.dart';
 /// * Stop an animation with [stopBarAnimation] and [stopThumbAnimation].
 /// * Set the bar or thumb animation to a specific [value].
 ///
-/// By default, an [ProgressBarController] linearly produces values that range
+/// By default, a [ProgressBarController] linearly produces values that range
 /// from 0.0 to 1.0, during a given duration.
 ///
 /// ## Ticker providers
