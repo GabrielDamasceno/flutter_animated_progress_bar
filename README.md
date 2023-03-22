@@ -1,18 +1,7 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+An animated progress bar widget designed to be used with audio or video.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+<!-- ![Audio demo]() -->
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
 
 ## Features
 
@@ -25,12 +14,18 @@ start using the package.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
 ```dart
-const like = 'sample';
+ProgressBar(
+    controller: _controller,
+    progress: const Duration(seconds: 30),
+    buffered: const Duration(seconds: 35),
+    total: const Duration(minutes: 1),
+    onSeek: (position) {
+        print('New position: $position');
+    },
+);
 ```
+
 
 ## Additional information
 

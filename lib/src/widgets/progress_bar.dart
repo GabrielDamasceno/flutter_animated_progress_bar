@@ -46,6 +46,7 @@ import 'package:flutter/material.dart';
 ///       controller: _controller,
 ///       progress: const Duration(seconds: 30),
 ///       buffered: const Duration(seconds: 35),
+///       total: const Duration(minutes: 1),
 ///       onSeek: (value) {
 ///         print('$value');
 ///       },

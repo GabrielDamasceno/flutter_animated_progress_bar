@@ -1,7 +1,8 @@
 name: animated_progress_bar
-description: A new Flutter package project.
+description: An animated progress bar widget designed to be used with audio or video.
 version: 0.0.1
-homepage:
+homepage: https://github.com/GabrielDamasceno/animated_progress_bar
+issue_tracker: https://github.com/GabrielDamasceno/animated_progress_bar/issues
 
 environment:
   sdk: '>=2.19.4 <3.0.0'
@@ -15,6 +16,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+
+screenshots:
+  - description: 'Example of the animated progress bar with video.'
+    path: doc/video_demo.gif
+  - description: 'Example of the animated progress bar with audio.'
+    path: doc/audio_demo.gif
+  - description: 'Example of the progress bar alignment behavior.'
+    path: doc/alignment_demo.gif
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

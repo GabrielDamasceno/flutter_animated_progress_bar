@@ -35,7 +35,7 @@ class _VideoExampleState extends State<VideoExample> with TickerProviderStateMix
     super.initState();
     _progressBarController = ProgressBarController(vsync: this);
     _videoPlayerController = VideoPlayerController.network(
-      'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
     );
     _videoPlayerController.initialize();
 
