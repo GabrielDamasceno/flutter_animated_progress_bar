@@ -8,11 +8,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 
 class RenderProgressBar extends RenderBox {
-  final ValueChanged<Duration> onSeek;
-  final ValueChanged<Duration>? onChanged;
-  final ValueChanged<Duration>? onChangeStart;
-  final ValueChanged<Duration>? onChangeEnd;
-
   RenderProgressBar({
     required ProgressBarController controller,
     required Duration progress,
@@ -69,21 +64,36 @@ class RenderProgressBar extends RenderBox {
     _tapGestureRecognizer = TapGestureRecognizer()..onTapUp = _onTapUpRecognizer;
   }
 
+  final ValueChanged<Duration> onSeek;
+  final ValueChanged<Duration>? onChanged;
+  final ValueChanged<Duration>? onChangeStart;
+  final ValueChanged<Duration>? onChangeEnd;
+
   late final HorizontalDragGestureRecognizer _horizontalDragGestureRecognizer;
   late final TapGestureRecognizer _tapGestureRecognizer;
 
   late bool _isDragging = false;
   late double _dxThumb = 0.0;
   late double _dyThumb = 0.0;
+  late double _effectiveThumbRadius;
+  late double _effectiveBarHeight;
+
+  static const double _minPreferredHeight = 24.0;
+
+  // This value is the touch target, 24, multiplied by 3.
+  static const double _minPreferredWidth = 72.0;
+
+  /// Matches Android implementation of material slider.
+  static const double _semanticsActionUnit = 0.05;
 
   late ProgressBarController _controller;
   ProgressBarController get controller => _controller;
   set controller(ProgressBarController newValue) {
     if (_controller == newValue) return;
 
-    _controller.removeListener(markNeedsLayout);
+    if (attached) _controller.removeListener(markNeedsLayout);
     _controller = newValue;
-    _controller.addListener(markNeedsLayout);
+    if (attached) _controller.addListener(markNeedsLayout);
     markNeedsLayout();
   }
 
@@ -346,14 +356,6 @@ class RenderProgressBar extends RenderBox {
   @override
   bool get isRepaintBoundary => true;
 
-  late double _effectiveThumbRadius;
-  late double _effectiveBarHeight;
-
-  static const double _minPreferredHeight = 24.0;
-
-  // This value is the touch target, 24, multiplied by 3.
-  static const double _minPreferredWidth = 72.0;
-
   @override
   double computeMinIntrinsicWidth(double height) => _minPreferredWidth;
 
@@ -365,134 +367,6 @@ class RenderProgressBar extends RenderBox {
 
   @override
   double computeMaxIntrinsicHeight(double width) => _minPreferredHeight;
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-
-    properties
-      ..add(StringProperty('controller', controller.toString()))
-      ..add(IntProperty('progress', _progress.inMilliseconds, unit: 'ms'))
-      ..add(IntProperty('buffered', _buffered?.inMilliseconds, unit: 'ms', ifNull: 'disabled'))
-      ..add(IntProperty('total', _total.inMilliseconds, unit: 'ms'))
-      ..add(EnumProperty('alignment', _alignment))
-      ..add(EnumProperty('barCapShape', _barCapShape))
-      ..add(DoubleProperty('collapsedBarHeight', _collapsedBarHeight))
-      ..add(DoubleProperty('collapsedThumbRadius', _collapsedThumbRadius))
-      ..add(DoubleProperty('expandedBarHeight', _expandedBarHeight))
-      ..add(DoubleProperty('expandedThumbRadius', _expandedThumbRadius))
-      ..add(DoubleProperty('thumbGlowRadius', _thumbGlowRadius))
-      ..add(ColorProperty('thumbGlowColor', _thumbGlowColor))
-      ..add(ColorProperty('backgroundBarColor', _backgroundBarColor))
-      ..add(ColorProperty('expandedProgressBarColor', _expandedProgressBarColor))
-      ..add(ColorProperty('expandedBufferedBarColor', _expandedBufferedBarColor))
-      ..add(ColorProperty('expandedThumbColor', _expandedThumbColor))
-      ..add(ColorProperty('collapsedProgressBarColor', _collapsedProgressBarColor))
-      ..add(ColorProperty('collapsedBufferedBarColor', _collapsedBufferedBarColor))
-      ..add(ColorProperty('collapsedThumbColor', _collapsedThumbColor))
-      ..add(DiagnosticsProperty<bool>('lerpColorsTransition', _lerpColorsTransition))
-      ..add(DiagnosticsProperty<bool>('showBufferedWhenCollapsed', _showBufferedWhenCollapsed))
-      ..add(
-        ObjectFlagProperty<ValueChanged<Duration>>(
-          'onSeek',
-          onSeek,
-          showName: true,
-          ifPresent: 'enabled',
-          ifNull: 'disabled',
-        ),
-      )
-      ..add(
-        ObjectFlagProperty<ValueChanged<Duration>>(
-          'onChanged',
-          onChanged,
-          showName: true,
-          ifPresent: 'enabled',
-          ifNull: 'disabled',
-        ),
-      )
-      ..add(
-        ObjectFlagProperty<ValueChanged<Duration>>(
-          'onChangeStart',
-          onChangeStart,
-          showName: true,
-          ifPresent: 'enabled',
-          ifNull: 'disabled',
-        ),
-      )
-      ..add(
-        ObjectFlagProperty<ValueChanged<Duration>>(
-          'onChangeEnd',
-          onChangeEnd,
-          showName: true,
-          ifPresent: 'enabled',
-          ifNull: 'disabled',
-        ),
-      );
-  }
-
-  @override
-  void describeSemanticsConfiguration(SemanticsConfiguration config) {
-    super.describeSemanticsConfiguration(config);
-
-    config
-      ..textDirection = TextDirection.ltr
-      ..label = 'Progress bar'
-      ..onIncrease = _increaseAction
-      ..onDecrease = _decreaseAction;
-
-    if (_semanticsFormatter != null) {
-      config
-        ..value = _semanticsFormatter!(_progressValue(_progress, _total))
-        ..increasedValue = semanticsFormatter!(
-          clampDouble(_progressValue(_progress, _total) + _semanticsActionUnit, 0.0, 1.0),
-        )
-        ..decreasedValue = semanticsFormatter!(
-          clampDouble(_progressValue(_progress, _total) - _semanticsActionUnit, 0.0, 1.0),
-        );
-    } else {
-      config
-        ..value = '${(_progressValue(_progress, _total) * 100).round()}%'
-        ..increasedValue =
-            '${(clampDouble(_progressValue(_progress, _total) + _semanticsActionUnit, 0.0, 1.0) * 100).round()}%'
-        ..decreasedValue =
-            '${(clampDouble(_progressValue(_progress, _total) - _semanticsActionUnit, 0.0, 1.0) * 100).round()}%';
-    }
-  }
-
-  void _increaseAction() {
-    final double value = clampDouble(
-      _progressValue(_progress, _total) + _semanticsActionUnit,
-      0.0,
-      1.0,
-    );
-
-    _progress = Duration(microseconds: (value * _total.inMicroseconds).round());
-
-    onChanged?.call(_progress);
-    onSeek.call(_progress);
-
-    markNeedsPaint();
-    markNeedsSemanticsUpdate();
-  }
-
-  void _decreaseAction() {
-    final double value = clampDouble(
-      _progressValue(_progress, _total) - _semanticsActionUnit,
-      0.0,
-      1.0,
-    );
-
-    _progress = Duration(microseconds: (value * _total.inMicroseconds).round());
-
-    onChanged?.call(_progress);
-    onSeek.call(_progress);
-
-    markNeedsPaint();
-    markNeedsSemanticsUpdate();
-  }
-
-  /// Matches Android implementation of material slider.
-  static const double _semanticsActionUnit = 0.05;
 
   @override
   bool hitTestSelf(Offset position) => true;
@@ -680,6 +554,131 @@ class RenderProgressBar extends RenderBox {
 
   Duration _positionToDuration(double position) {
     return Duration(microseconds: ((position / size.width) * _total.inMicroseconds).round());
+  }
+
+  @override
+  void describeSemanticsConfiguration(SemanticsConfiguration config) {
+    super.describeSemanticsConfiguration(config);
+
+    config
+      ..textDirection = TextDirection.ltr
+      ..label = 'Progress bar'
+      ..onIncrease = _increaseAction
+      ..onDecrease = _decreaseAction;
+
+    if (_semanticsFormatter != null) {
+      config
+        ..value = _semanticsFormatter!(_progressValue(_progress, _total))
+        ..increasedValue = semanticsFormatter!(
+          clampDouble(_progressValue(_progress, _total) + _semanticsActionUnit, 0.0, 1.0),
+        )
+        ..decreasedValue = semanticsFormatter!(
+          clampDouble(_progressValue(_progress, _total) - _semanticsActionUnit, 0.0, 1.0),
+        );
+    } else {
+      config
+        ..value = '${(_progressValue(_progress, _total) * 100).round()}%'
+        ..increasedValue =
+            '${(clampDouble(_progressValue(_progress, _total) + _semanticsActionUnit, 0.0, 1.0) * 100).round()}%'
+        ..decreasedValue =
+            '${(clampDouble(_progressValue(_progress, _total) - _semanticsActionUnit, 0.0, 1.0) * 100).round()}%';
+    }
+  }
+
+  void _increaseAction() {
+    final double value = clampDouble(
+      _progressValue(_progress, _total) + _semanticsActionUnit,
+      0.0,
+      1.0,
+    );
+
+    _progress = Duration(microseconds: (value * _total.inMicroseconds).round());
+
+    onChanged?.call(_progress);
+    onSeek.call(_progress);
+
+    markNeedsPaint();
+    markNeedsSemanticsUpdate();
+  }
+
+  void _decreaseAction() {
+    final double value = clampDouble(
+      _progressValue(_progress, _total) - _semanticsActionUnit,
+      0.0,
+      1.0,
+    );
+
+    _progress = Duration(microseconds: (value * _total.inMicroseconds).round());
+
+    onChanged?.call(_progress);
+    onSeek.call(_progress);
+
+    markNeedsPaint();
+    markNeedsSemanticsUpdate();
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+
+    properties
+      ..add(StringProperty('controller', controller.toString()))
+      ..add(IntProperty('progress', _progress.inMilliseconds, unit: 'ms'))
+      ..add(IntProperty('buffered', _buffered?.inMilliseconds, unit: 'ms', ifNull: 'disabled'))
+      ..add(IntProperty('total', _total.inMilliseconds, unit: 'ms'))
+      ..add(EnumProperty('alignment', _alignment))
+      ..add(EnumProperty('barCapShape', _barCapShape))
+      ..add(DoubleProperty('collapsedBarHeight', _collapsedBarHeight))
+      ..add(DoubleProperty('collapsedThumbRadius', _collapsedThumbRadius))
+      ..add(DoubleProperty('expandedBarHeight', _expandedBarHeight))
+      ..add(DoubleProperty('expandedThumbRadius', _expandedThumbRadius))
+      ..add(DoubleProperty('thumbGlowRadius', _thumbGlowRadius))
+      ..add(ColorProperty('thumbGlowColor', _thumbGlowColor))
+      ..add(ColorProperty('backgroundBarColor', _backgroundBarColor))
+      ..add(ColorProperty('expandedProgressBarColor', _expandedProgressBarColor))
+      ..add(ColorProperty('expandedBufferedBarColor', _expandedBufferedBarColor))
+      ..add(ColorProperty('expandedThumbColor', _expandedThumbColor))
+      ..add(ColorProperty('collapsedProgressBarColor', _collapsedProgressBarColor))
+      ..add(ColorProperty('collapsedBufferedBarColor', _collapsedBufferedBarColor))
+      ..add(ColorProperty('collapsedThumbColor', _collapsedThumbColor))
+      ..add(DiagnosticsProperty<bool>('lerpColorsTransition', _lerpColorsTransition))
+      ..add(DiagnosticsProperty<bool>('showBufferedWhenCollapsed', _showBufferedWhenCollapsed))
+      ..add(
+        ObjectFlagProperty<ValueChanged<Duration>>(
+          'onSeek',
+          onSeek,
+          showName: true,
+          ifPresent: 'enabled',
+          ifNull: 'disabled',
+        ),
+      )
+      ..add(
+        ObjectFlagProperty<ValueChanged<Duration>>(
+          'onChanged',
+          onChanged,
+          showName: true,
+          ifPresent: 'enabled',
+          ifNull: 'disabled',
+        ),
+      )
+      ..add(
+        ObjectFlagProperty<ValueChanged<Duration>>(
+          'onChangeStart',
+          onChangeStart,
+          showName: true,
+          ifPresent: 'enabled',
+          ifNull: 'disabled',
+        ),
+      )
+      ..add(
+        ObjectFlagProperty<ValueChanged<Duration>>(
+          'onChangeEnd',
+          onChangeEnd,
+          showName: true,
+          ifPresent: 'enabled',
+          ifNull: 'disabled',
+        ),
+      );
   }
 
   @override
