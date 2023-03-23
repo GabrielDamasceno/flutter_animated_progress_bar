@@ -1,18 +1,71 @@
 An animated progress bar widget designed to be used with audio or video.
 
-<!-- ![Audio demo]() -->
+<p align='center'>
+    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/simple_demo.gif" />
+</p>
 
+<p align='center'>
+    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/video_demo.gif" />
+    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/audio_demo.gif" />
+</p>
 
-## Features
+## Quick Example
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+```dart
+class Example extends StatefulWidget {
+  const Example({super.key});
 
-## Getting started
+  @override
+  State<Example> createState() => _ExampleState();
+}
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+class _ExampleState extends State<Example> with TickerProviderStateMixin {
+  late final ProgressBarController _controller;
 
-## Usage
+  @override
+  void initState() {
+    super.initState();
+    _controller = ProgressBarController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ProgressBar(
+      controller: _controller,
+      progress: const Duration(seconds: 30),
+      buffered: const Duration(seconds: 35),
+      total: const Duration(minutes: 1),
+      onSeek: (position) {
+        print('New position: $position');
+      },
+    );
+  }
+}
+```
+
+### Usage
+
+First, you need a `ProgressBarController` to run the animations. Similar to [AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html), you have to pass a [TickerProvider](https://api.flutter.dev/flutter/scheduler/TickerProvider-class.html) which is configured using the `vsync` argument on the constructor.
+
+To do so, you can add a [TickerProviderStateMixin](https://api.flutter.dev/flutter/widgets/TickerProviderStateMixin-mixin.html) to your [State](https://api.flutter.dev/flutter/widgets/State-class.html).
+
+```dart
+class _ExampleState extends State<Example> with TickerProviderStateMixin {...}
+```
+
+Then, add to `ProgressBarController`:
+
+```dart
+_controller = ProgressBarController(vsync: this);
+```
+
+After that, add the media `progress` and `total` durations. You can also add the `buffered` position of the media.
 
 ```dart
 ProgressBar(
@@ -26,9 +79,64 @@ ProgressBar(
 );
 ```
 
+Don't forget to `dispose` the controller when no longer needed.
 
-## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+#### ProgressBarController
+
+You can customize the duration of animations as below:
+
+```dart
+_controller = ProgressBarController(
+      vsync: this,
+      barAnimationDuration: const Duration(milliseconds: 300),
+      thumbAnimationDuration: const Duration(milliseconds: 200),
+      waitingDuration: const Duration(seconds: 3),
+    );
+```
+
+
+If you want to go further, the controller gives you full control of the animations:
+```dart
+_controller.forward();                      // Expand bar, wait and then collapse.
+
+_controller.expandBar();                    // Expand the bar.
+_controller.collapseBar();                  // Collapse the bar.
+_controller.stopBarAnimation();             // Stop bar animation, if running.
+
+_controller.expandThumb();                  // Expand the thumb.
+_controller.collapseThumb();                // Collapse the thumb.
+_controller.stopThumbAnimation();           // Stop thumb animation, if running.
+```
+
+The methods that start animations return a [TickerFuture](https://api.flutter.dev/flutter/scheduler/TickerFuture-class.html) object which completes when the animation completes successfully. Which means that you can `await` for them to finish.
+
+### Customization
+
+You can customize the ProgressBar with the following parameters:
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `alignment` | `ProgressBarAlignment` | The alignment of ProgressBar relative to it's total size. |
+| `barCapShape` | `BarCapShape` | The shape of the bars at the left and right edges. |
+| `collapsedBarHeight` | `double` | The smallest size of this bar. |
+| `collapsedThumbRadius` | `double` | The smallest size of this thumb. |
+| `expandedBarHeight` | `double` | The greatest size of this bar. |
+| `expandedThumbRadius` | `double` | The greatest size of this thumb. |
+| `thumbGlowRadius` | `double` | The overlay drawn around the thumb. |
+| `thumbGlowColor` | `Color` | The color of the overlay drawn around the thumb. |
+| `backgroundBarColor` | `Color` | The color of the bar in background. |
+| `collapsedProgressBarColor` | `Color` | The color of the collapsed progress bar. |
+| `collapsedBufferedBarColor` | `Color` | The color of the collapsed buffered bar. |
+| `collapsedThumbColor` | `Color` | The color of the collapsed thumb. |
+| `expandedProgressBarColor` | `Color?` | The color of the expanded progress bar. |
+| `expandedBufferedBarColor` | `Color?` | The color of the expanded buffered bar. |
+| `expandedThumbColor` | `Color?` | The color of the expanded thumb. |
+| `lerpColorsTransition` | `bool` |  Whether colors should be linearly interpolated when transitioning from collapsed to expanded state and vice versa. |
+| `showBufferedWhenCollapsed` | `bool` | Whether the buffered bar should be shown when collapsed. |
+
+To quickly try it out all these features, check the [Playground](https://github.com/GabrielDamasceno/animated_progress_bar/blob/develop/example/lib/ui/playground.dart):
+
+![Playground](https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/playground.jpg)
+### Notes
+If you find any bugs, don't hesitate to open an issue!

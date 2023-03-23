@@ -17,99 +17,43 @@ class SimpleExample extends StatefulWidget {
 }
 
 class _SimpleExampleState extends State<SimpleExample> with TickerProviderStateMixin {
-  late final ProgressBarController _controller1;
-  late final ProgressBarController _controller2;
+  late final ProgressBarController _controller;
 
   @override
   void initState() {
     super.initState();
 
-    _controller1 = ProgressBarController(vsync: this);
-    _controller2 = ProgressBarController(vsync: this);
+    _controller = ProgressBarController(
+      vsync: this,
+      barAnimationDuration: const Duration(milliseconds: 300),
+      thumbAnimationDuration: const Duration(milliseconds: 200),
+    );
   }
 
   @override
   void dispose() {
-    _controller1.dispose();
-    _controller2.dispose();
-
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Simple Example')),
-      body: ListView(
-        physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(vertical: 15.0),
-        children: [
-          _Demo(
-            label: 'Aligned to the center',
-            controller: _controller1,
-            alignment: ProgressBarAlignment.center,
-          ),
-          const SizedBox(height: 20.0),
-          _Demo(
-            label: 'Aligned to the bottom',
-            controller: _controller2,
-            alignment: ProgressBarAlignment.bottom,
-          ),
-        ],
+      appBar: AppBar(title: const Text('Simple example')),
+      body: Center(
+        child: ProgressBar(
+          controller: _controller,
+          progress: const Duration(seconds: 30),
+          buffered: const Duration(seconds: 45),
+          total: const Duration(minutes: 1),
+          collapsedBarHeight: 6.0,
+          expandedBarHeight: 12.0,
+          collapsedThumbRadius: 10.0,
+          expandedThumbRadius: 14.0,
+          thumbGlowRadius: 32.0,
+          onSeek: (value) {},
+        ),
       ),
-    );
-  }
-}
-
-class _Demo extends StatelessWidget {
-  final String label;
-  final ProgressBarController controller;
-  final ProgressBarAlignment alignment;
-
-  const _Demo({
-    super.key,
-    required this.label,
-    required this.controller,
-    required this.alignment,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              const Placeholder(),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: ProgressBar(
-                  controller: controller,
-                  alignment: alignment,
-                  progress: const Duration(seconds: 30),
-                  buffered: const Duration(seconds: 45),
-                  total: const Duration(minutes: 1),
-                  onSeek: (value) {},
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

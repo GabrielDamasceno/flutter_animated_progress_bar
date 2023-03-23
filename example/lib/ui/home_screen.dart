@@ -1,5 +1,6 @@
 import 'package:example/ui/audio_example.dart';
 import 'package:example/ui/playground.dart';
+import 'package:example/ui/alignment_example.dart';
 import 'package:example/ui/simple_example.dart';
 import 'package:example/ui/video_example.dart';
 import 'package:flutter/material.dart';
@@ -15,20 +16,24 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => SimpleExample.route(context),
               child: const Text('Simple Example'),
+              onPressed: () => SimpleExample.route(context),
             ),
             ElevatedButton(
-              onPressed: () => AudioExample.route(context),
+              child: const Text('Alignment Example'),
+              onPressed: () => AlignmentExample.route(context),
+            ),
+            ElevatedButton(
               child: const Text('Audio Example'),
+              onPressed: () => AudioExample.route(context),
             ),
             ElevatedButton(
-              onPressed: () => VideoExample.route(context),
               child: const Text('Video Example'),
+              onPressed: () => VideoExample.route(context),
             ),
             ElevatedButton(
-              onPressed: () => Playground.route(context),
               child: const Text('Playground'),
+              onPressed: () => Playground.route(context),
             ),
           ],
         ),
