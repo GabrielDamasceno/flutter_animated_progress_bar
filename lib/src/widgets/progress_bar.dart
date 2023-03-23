@@ -1,7 +1,7 @@
-import 'package:animated_progress_bar/src/foundation/basic_types.dart';
-import 'package:animated_progress_bar/src/foundation/controller.dart';
-import 'package:animated_progress_bar/src/foundation/enums.dart';
-import 'package:animated_progress_bar/src/rendering/render_progress_bar.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/controller.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/enums.dart';
+import 'package:flutter_animated_progress_bar/src/rendering/render_progress_bar.dart';
 import 'package:flutter/material.dart';
 
 /// An animated progress bar widget designed to be used with audio or video.
@@ -120,7 +120,7 @@ class ProgressBar extends LeafRenderObjectWidget {
   ///
   /// This will have a direct impact on how the progress bar will be animated.
   /// To see how the animation will behave, take a look at
-  /// this [example](https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/alignment_demo.gif).
+  /// this [example](https://github.com/GabrielDamasceno/flutter_animated_progress_bar/blob/master/doc/alignment_demo.gif).
   ///
   /// Defaults to `ProgressBarAlignment.center`.
   final ProgressBarAlignment alignment;

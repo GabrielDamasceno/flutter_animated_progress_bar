@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:animated_progress_bar/src/foundation/basic_types.dart';
-import 'package:animated_progress_bar/src/foundation/controller.dart';
-import 'package:animated_progress_bar/src/foundation/enums.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/controller.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/enums.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
