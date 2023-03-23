@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:animated_progress_bar/animated_progress_bar.dart';
+import 'package:flutter_animated_progress_bar/flutter_animated_progress_bar.dart';
 import 'package:example/extensions/formatted_time.dart';
 import 'package:example/models/position_data.dart';
 import 'package:flutter/material.dart';
