@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:animated_progress_bar/src/foundation/simulations.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/scheduler.dart';
 
 /// A controller for [ProgressBar] animation.
