@@ -119,10 +119,10 @@ class ProgressBar extends LeafRenderObjectWidget {
   /// The alignment of [ProgressBar] relative to it's total size.
   ///
   /// This will have a direct impact on how the progress bar will be animated.
-  /// To see how the animation will behave, take a look at ...
+  /// To see how the animation will behave, take a look at
+  /// this [example](https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/alignment_demo.gif).
   ///
   /// Defaults to `ProgressBarAlignment.center`.
-  ///TODO: Add a gif to show the behavior
   final ProgressBarAlignment alignment;
 
   /// The shape of the bars at the left and right edges.
