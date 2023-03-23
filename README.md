@@ -1,12 +1,16 @@
-An animated progress bar widget designed to be used with audio or video.
+# animated_progress_bar
+
+<p align='center'> An animated progress bar widget designed to be used with video or audio. </p>
 
 <p align='center'>
-    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/simple_demo.gif" />
+    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/simple_demo.gif"/>
 </p>
 
+<p align='center'> Demo with video and audio: </p>
+
 <p align='center'>
-    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/video_demo.gif" />
-    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/audio_demo.gif" />
+    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/video_demo.gif"/>
+    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/audio_demo.gif"/>
 </p>
 
 ## Quick Example
@@ -82,7 +86,7 @@ ProgressBar(
 Don't forget to `dispose` the controller when no longer needed.
 
 
-#### ProgressBarController
+### ProgressBarController
 
 You can customize the duration of animations as below:
 
@@ -135,8 +139,11 @@ You can customize the ProgressBar with the following parameters:
 | `lerpColorsTransition` | `bool` |  Whether colors should be linearly interpolated when transitioning from collapsed to expanded state and vice versa. |
 | `showBufferedWhenCollapsed` | `bool` | Whether the buffered bar should be shown when collapsed. |
 
-To quickly try it out all these features, check the [Playground](https://github.com/GabrielDamasceno/animated_progress_bar/blob/develop/example/lib/ui/playground.dart):
+To quickly try it out all these features, check the [Playground](https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/example/lib/ui/playground.dart):
 
-![Playground](https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/playground.jpg)
+<p align='center'>
+    <img src="https://github.com/GabrielDamasceno/animated_progress_bar/blob/master/doc/playground.jpg" width="30%" height="30%"/>
+</p>
+
 ### Notes
 If you find any bugs, don't hesitate to open an issue!
