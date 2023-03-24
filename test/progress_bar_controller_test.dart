@@ -29,7 +29,8 @@ void main() {
 
       /// Expanding bar
       for (final fraction in fractions) {
-        final int microseconds = (barAnimationDuration.inMicroseconds * fraction).round();
+        final int microseconds =
+            (barAnimationDuration.inMicroseconds * fraction).round();
         tick(Duration(microseconds: microseconds));
         expect(controller.barValue, moreOrLessEquals(fraction));
         expect(controller.thumbValue, 0.0);
@@ -72,17 +73,22 @@ void main() {
 
         controller.collapseBar();
         tick(Duration.zero);
-        tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.75).round()));
+        tick(Duration(
+            microseconds:
+                (barAnimationDuration.inMicroseconds * 0.75).round()));
         expect(controller.barValue, moreOrLessEquals(0.25));
         expect(controller.thumbValue, 0.0);
 
         controller.forward();
         tick(Duration.zero);
-        tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.75).round()));
+        tick(Duration(
+            microseconds:
+                (barAnimationDuration.inMicroseconds * 0.75).round()));
         expect(controller.barValue, moreOrLessEquals(1.0));
         expect(controller.thumbValue, 0.0);
 
-        tick(Duration(microseconds: (barAnimationDuration.inMicroseconds).round()));
+        tick(Duration(
+            microseconds: (barAnimationDuration.inMicroseconds).round()));
         expect(controller.barValue, moreOrLessEquals(1.0));
         expect(controller.thumbValue, 0.0);
 
@@ -117,7 +123,8 @@ void main() {
       controller.expandBar();
 
       for (final fraction in fractions) {
-        final int microseconds = (barAnimationDuration.inMicroseconds * fraction).round();
+        final int microseconds =
+            (barAnimationDuration.inMicroseconds * fraction).round();
         tick(Duration(microseconds: microseconds));
         expect(controller.barValue, moreOrLessEquals(fraction));
         expect(controller.thumbValue, 0.0);
@@ -140,18 +147,21 @@ void main() {
       tick(Duration.zero);
 
       controller.collapseBar();
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.25).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.25).round()));
 
       controller.expandBar();
       tick(Duration.zero);
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.25).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.25).round()));
       expect(controller.barValue, moreOrLessEquals(1.0));
       expect(controller.thumbValue, 0.0);
 
       controller.dispose();
     });
 
-    test('If value is not at target, should throw an error if called with a disposed controller',
+    test(
+        'If value is not at target, should throw an error if called with a disposed controller',
         () {
       final ProgressBarController controller = ProgressBarController(
         barAnimationDuration: barAnimationDuration,
@@ -186,7 +196,8 @@ void main() {
       expect(controller.barValue, equals(1.0));
       expect(notifications, equals(1));
 
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.50).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.50).round()));
       expect(controller.barValue, equals(1.0));
       expect(notifications, equals(1));
 
@@ -209,7 +220,8 @@ void main() {
       controller.collapseBar();
 
       for (final fraction in fractions) {
-        final int microseconds = (barAnimationDuration.inMicroseconds * fraction).round();
+        final int microseconds =
+            (barAnimationDuration.inMicroseconds * fraction).round();
         tick(Duration(microseconds: microseconds));
         expect(controller.barValue, moreOrLessEquals(1 - fraction));
         expect(controller.thumbValue, 0.0);
@@ -229,18 +241,21 @@ void main() {
       );
 
       controller.expandBar();
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.75).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.75).round()));
 
       controller.collapseBar();
       tick(Duration.zero);
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.75).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.75).round()));
       expect(controller.barValue, moreOrLessEquals(0.0));
       expect(controller.thumbValue, 0.0);
 
       controller.dispose();
     });
 
-    test('If value is not at target, should throw an error if called with a disposed controller',
+    test(
+        'If value is not at target, should throw an error if called with a disposed controller',
         () {
       final ProgressBarController controller = ProgressBarController(
         barAnimationDuration: barAnimationDuration,
@@ -271,7 +286,8 @@ void main() {
       expect(controller.barValue, equals(0.0));
       expect(notifications, equals(0));
 
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.50).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.50).round()));
       expect(controller.barValue, equals(0.0));
       expect(notifications, equals(0));
 
@@ -291,7 +307,8 @@ void main() {
       controller.expandThumb();
 
       for (final fraction in fractions) {
-        final int microseconds = (thumbAnimationDuration.inMicroseconds * fraction).round();
+        final int microseconds =
+            (thumbAnimationDuration.inMicroseconds * fraction).round();
         tick(Duration(microseconds: microseconds));
         expect(controller.barValue, 0.0);
         expect(controller.thumbValue, moreOrLessEquals(fraction));
@@ -314,18 +331,21 @@ void main() {
       tick(Duration.zero);
 
       controller.collapseThumb();
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.55).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.55).round()));
 
       controller.expandThumb();
       tick(Duration.zero);
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.55).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.55).round()));
       expect(controller.barValue, 0.0);
       expect(controller.thumbValue, moreOrLessEquals(1.0));
 
       controller.dispose();
     });
 
-    test('If value is not at target, should throw an error if called with a disposed controller',
+    test(
+        'If value is not at target, should throw an error if called with a disposed controller',
         () {
       final ProgressBarController controller = ProgressBarController(
         barAnimationDuration: barAnimationDuration,
@@ -360,7 +380,9 @@ void main() {
       expect(controller.thumbValue, equals(1.0));
       expect(notifications, equals(1));
 
-      tick(Duration(microseconds: (thumbAnimationDuration.inMicroseconds * 0.50).round()));
+      tick(Duration(
+          microseconds:
+              (thumbAnimationDuration.inMicroseconds * 0.50).round()));
       expect(controller.thumbValue, equals(1.0));
       expect(notifications, equals(1));
 
@@ -383,7 +405,8 @@ void main() {
       controller.collapseThumb();
 
       for (final fraction in fractions) {
-        final int microseconds = (thumbAnimationDuration.inMicroseconds * fraction).round();
+        final int microseconds =
+            (thumbAnimationDuration.inMicroseconds * fraction).round();
         tick(Duration(microseconds: microseconds));
         expect(controller.barValue, 0.0);
         expect(controller.thumbValue, moreOrLessEquals(1 - fraction));
@@ -403,18 +426,21 @@ void main() {
       );
 
       controller.expandThumb();
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.45).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.45).round()));
 
       controller.collapseThumb();
       tick(Duration.zero);
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.45).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.45).round()));
       expect(controller.barValue, 0.0);
       expect(controller.thumbValue, moreOrLessEquals(0.0));
 
       controller.dispose();
     });
 
-    test('If value is not at target, should throw an error if called with a disposed controller',
+    test(
+        'If value is not at target, should throw an error if called with a disposed controller',
         () {
       final ProgressBarController controller = ProgressBarController(
         barAnimationDuration: barAnimationDuration,
@@ -446,7 +472,9 @@ void main() {
       expect(controller.thumbValue, equals(0.0));
       expect(notifications, equals(0));
 
-      tick(Duration(microseconds: (thumbAnimationDuration.inMicroseconds * 0.50).round()));
+      tick(Duration(
+          microseconds:
+              (thumbAnimationDuration.inMicroseconds * 0.50).round()));
       expect(controller.thumbValue, equals(0.0));
       expect(notifications, equals(0));
 
@@ -466,7 +494,8 @@ void main() {
       controller.expandBar();
       tick(Duration.zero);
 
-      tick(Duration(microseconds: (barAnimationDuration.inMicroseconds * 0.80).round()));
+      tick(Duration(
+          microseconds: (barAnimationDuration.inMicroseconds * 0.80).round()));
       expect(controller.barValue, moreOrLessEquals(0.80));
       expect(controller.thumbValue, 0.0);
 
@@ -510,7 +539,9 @@ void main() {
       controller.expandThumb();
       tick(Duration.zero);
 
-      tick(Duration(microseconds: (thumbAnimationDuration.inMicroseconds * 0.30).round()));
+      tick(Duration(
+          microseconds:
+              (thumbAnimationDuration.inMicroseconds * 0.30).round()));
       expect(controller.barValue, 0.0);
       expect(controller.thumbValue, moreOrLessEquals(0.30));
 
@@ -543,7 +574,8 @@ void main() {
   });
 
   group('Simultaneous animation:', () {
-    test('[expandBar] and [expandThumb] should update its values accordingly', () {
+    test('[expandBar] and [expandThumb] should update its values accordingly',
+        () {
       final ProgressBarController controller = ProgressBarController(
         barAnimationDuration: barAnimationDuration,
         thumbAnimationDuration: thumbAnimationDuration,
@@ -572,7 +604,9 @@ void main() {
       expect(controller.thumbValue, moreOrLessEquals(1.0));
     });
 
-    test('[collapseBar] and [collapseThumb] should update its values accordingly', () {
+    test(
+        '[collapseBar] and [collapseThumb] should update its values accordingly',
+        () {
       final ProgressBarController controller = ProgressBarController(
         barAnimationDuration: barAnimationDuration,
         thumbAnimationDuration: thumbAnimationDuration,

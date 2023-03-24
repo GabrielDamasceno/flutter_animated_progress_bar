@@ -61,7 +61,8 @@ class RenderProgressBar extends RenderBox {
       ..onStart = _onStartHorizontalRecognizer
       ..onEnd = _onEndHorizontalRecognizer
       ..onUpdate = _onUpdateHorizontalRecognizer;
-    _tapGestureRecognizer = TapGestureRecognizer()..onTapUp = _onTapUpRecognizer;
+    _tapGestureRecognizer = TapGestureRecognizer()
+      ..onTapUp = _onTapUpRecognizer;
   }
 
   final ValueChanged<Duration> onSeek;
@@ -393,11 +394,13 @@ class RenderProgressBar extends RenderBox {
   }
 
   void _computeEffectiveSizes() {
-    final double thumbDelta = (_expandedThumbRadius - _collapsedThumbRadius).abs();
+    final double thumbDelta =
+        (_expandedThumbRadius - _collapsedThumbRadius).abs();
     final double barDelta = (_expandedBarHeight - _collapsedBarHeight).abs();
-    _effectiveThumbRadius =
-        (_collapsedThumbRadius * _controller.barValue) + (thumbDelta * _controller.thumbValue);
-    _effectiveBarHeight = (barDelta * _controller.barValue) + collapsedBarHeight;
+    _effectiveThumbRadius = (_collapsedThumbRadius * _controller.barValue) +
+        (thumbDelta * _controller.thumbValue);
+    _effectiveBarHeight =
+        (barDelta * _controller.barValue) + collapsedBarHeight;
   }
 
   Size _computeDesiredSize() {
@@ -441,7 +444,9 @@ class RenderProgressBar extends RenderBox {
       if (!showBufferedWhenCollapsed && _controller.barValue == 0.0) {
         bufferedRRect = RRect.zero;
       } else {
-        bufferedRRect = _barRRect(width: _durationToPosition(_buffered!, _total));
+        bufferedRRect = _barRRect(
+          width: _durationToPosition(_buffered!, _total),
+        );
       }
     } else {
       bufferedRRect = RRect.zero;
@@ -458,7 +463,9 @@ class RenderProgressBar extends RenderBox {
         _controller.barValue,
       );
 
-    final RRect progressRRect = _barRRect(width: _durationToPosition(_progress, _total));
+    final RRect progressRRect = _barRRect(
+      width: _durationToPosition(_progress, _total),
+    );
 
     canvas.drawRRect(progressRRect, progressBarPaint);
   }
@@ -473,9 +480,18 @@ class RenderProgressBar extends RenderBox {
     } else if (_barCapShape == BarCapShape.square) {
       radius = Radius.circular(_effectiveThumbRadius);
       if ((_dxThumb - _effectiveThumbRadius) <= 0) {
-        return RRect.fromRectAndCorners(rect, topLeft: radius, bottomLeft: radius);
-      } else if ((_dxThumb + _effectiveThumbRadius) >= size.width && width >= size.width) {
-        return RRect.fromRectAndCorners(rect, topRight: radius, bottomRight: radius);
+        return RRect.fromRectAndCorners(
+          rect,
+          topLeft: radius,
+          bottomLeft: radius,
+        );
+      } else if ((_dxThumb + _effectiveThumbRadius) >= size.width &&
+          width >= size.width) {
+        return RRect.fromRectAndCorners(
+          rect,
+          topRight: radius,
+          bottomRight: radius,
+        );
       }
     }
 
@@ -500,7 +516,11 @@ class RenderProgressBar extends RenderBox {
     final Offset offset = Offset(dx, dy);
 
     if (_isDragging && _thumbGlowRadius > 0.0) {
-      canvas.drawCircle(offset, _thumbGlowRadius * _controller.thumbValue, thumbGlowPaint);
+      canvas.drawCircle(
+        offset,
+        _thumbGlowRadius * _controller.thumbValue,
+        thumbGlowPaint,
+      );
     }
 
     canvas.drawCircle(offset, _effectiveThumbRadius, thumbPaint);
@@ -528,7 +548,9 @@ class RenderProgressBar extends RenderBox {
 
     if (_alignment == ProgressBarAlignment.bottom) {
       if (thumbDiameter > _effectiveBarHeight) {
-        dy = size.height - _effectiveBarHeight - (_effectiveThumbRadius - _effectiveBarHeight / 2);
+        dy = size.height -
+            _effectiveBarHeight -
+            (_effectiveThumbRadius - _effectiveBarHeight / 2);
       } else {
         dy = size.height - _effectiveBarHeight;
       }
@@ -553,7 +575,9 @@ class RenderProgressBar extends RenderBox {
   }
 
   Duration _positionToDuration(double position) {
-    return Duration(microseconds: ((position / size.width) * _total.inMicroseconds).round());
+    return Duration(
+      microseconds: ((position / size.width) * _total.inMicroseconds).round(),
+    );
   }
 
   @override
@@ -570,10 +594,15 @@ class RenderProgressBar extends RenderBox {
       config
         ..value = _semanticsFormatter!(_progressValue(_progress, _total))
         ..increasedValue = semanticsFormatter!(
-          clampDouble(_progressValue(_progress, _total) + _semanticsActionUnit, 0.0, 1.0),
+          clampDouble(_progressValue(_progress, _total) + _semanticsActionUnit,
+              0.0, 1.0),
         )
         ..decreasedValue = semanticsFormatter!(
-          clampDouble(_progressValue(_progress, _total) - _semanticsActionUnit, 0.0, 1.0),
+          clampDouble(
+            _progressValue(_progress, _total) - _semanticsActionUnit,
+            0.0,
+            1.0,
+          ),
         );
     } else {
       config
@@ -624,7 +653,14 @@ class RenderProgressBar extends RenderBox {
     properties
       ..add(StringProperty('controller', controller.toString()))
       ..add(IntProperty('progress', _progress.inMilliseconds, unit: 'ms'))
-      ..add(IntProperty('buffered', _buffered?.inMilliseconds, unit: 'ms', ifNull: 'disabled'))
+      ..add(
+        IntProperty(
+          'buffered',
+          _buffered?.inMilliseconds,
+          unit: 'ms',
+          ifNull: 'disabled',
+        ),
+      )
       ..add(IntProperty('total', _total.inMilliseconds, unit: 'ms'))
       ..add(EnumProperty('alignment', _alignment))
       ..add(EnumProperty('barCapShape', _barCapShape))
@@ -635,14 +671,32 @@ class RenderProgressBar extends RenderBox {
       ..add(DoubleProperty('thumbGlowRadius', _thumbGlowRadius))
       ..add(ColorProperty('thumbGlowColor', _thumbGlowColor))
       ..add(ColorProperty('backgroundBarColor', _backgroundBarColor))
-      ..add(ColorProperty('expandedProgressBarColor', _expandedProgressBarColor))
-      ..add(ColorProperty('expandedBufferedBarColor', _expandedBufferedBarColor))
+      ..add(
+        ColorProperty('expandedProgressBarColor', _expandedProgressBarColor),
+      )
+      ..add(
+        ColorProperty('expandedBufferedBarColor', _expandedBufferedBarColor),
+      )
       ..add(ColorProperty('expandedThumbColor', _expandedThumbColor))
-      ..add(ColorProperty('collapsedProgressBarColor', _collapsedProgressBarColor))
-      ..add(ColorProperty('collapsedBufferedBarColor', _collapsedBufferedBarColor))
+      ..add(
+        ColorProperty('collapsedProgressBarColor', _collapsedProgressBarColor),
+      )
+      ..add(
+        ColorProperty('collapsedBufferedBarColor', _collapsedBufferedBarColor),
+      )
       ..add(ColorProperty('collapsedThumbColor', _collapsedThumbColor))
-      ..add(DiagnosticsProperty<bool>('lerpColorsTransition', _lerpColorsTransition))
-      ..add(DiagnosticsProperty<bool>('showBufferedWhenCollapsed', _showBufferedWhenCollapsed))
+      ..add(
+        DiagnosticsProperty<bool>(
+          'lerpColorsTransition',
+          _lerpColorsTransition,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<bool>(
+          'showBufferedWhenCollapsed',
+          _showBufferedWhenCollapsed,
+        ),
+      )
       ..add(
         ObjectFlagProperty<ValueChanged<Duration>>(
           'onSeek',

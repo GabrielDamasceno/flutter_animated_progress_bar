@@ -16,7 +16,8 @@ class SimpleExample extends StatefulWidget {
   }
 }
 
-class _SimpleExampleState extends State<SimpleExample> with TickerProviderStateMixin {
+class _SimpleExampleState extends State<SimpleExample>
+    with TickerProviderStateMixin {
   late final ProgressBarController _controller;
 
   @override

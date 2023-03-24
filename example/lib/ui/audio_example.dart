@@ -20,7 +20,8 @@ class AudioExample extends StatefulWidget {
   }
 }
 
-class _AudioExampleState extends State<AudioExample> with TickerProviderStateMixin {
+class _AudioExampleState extends State<AudioExample>
+    with TickerProviderStateMixin {
   late final AudioPlayer _player;
   late final ProgressBarController _progressBarController;
 
@@ -28,7 +29,9 @@ class _AudioExampleState extends State<AudioExample> with TickerProviderStateMix
   void initState() {
     super.initState();
     _player = AudioPlayer();
-    _player.setUrl('https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3');
+    _player.setUrl(
+      'https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3',
+    );
     _progressBarController = ProgressBarController(vsync: this);
   }
 
@@ -53,7 +56,8 @@ class _AudioExampleState extends State<AudioExample> with TickerProviderStateMix
               stream: _player.playerStateStream,
               builder: (context, snapshot) {
                 final PlayerState? playerState = snapshot.data;
-                final ProcessingState? processingState = playerState?.processingState;
+                final ProcessingState? processingState =
+                    playerState?.processingState;
                 final bool? playing = playerState?.playing;
 
                 if (processingState == ProcessingState.loading ||
@@ -90,8 +94,10 @@ class _AudioExampleState extends State<AudioExample> with TickerProviderStateMix
               stream: _positionDataStream,
               builder: (context, snapshot) {
                 final PositionData? positionData = snapshot.data;
-                final Duration progress = positionData?.position ?? Duration.zero;
-                final Duration buffered = positionData?.bufferedPosition ?? Duration.zero;
+                final Duration progress =
+                    positionData?.position ?? Duration.zero;
+                final Duration buffered =
+                    positionData?.bufferedPosition ?? Duration.zero;
                 final Duration total = positionData?.duration ?? Duration.zero;
 
                 return Column(
@@ -126,9 +132,13 @@ class _AudioExampleState extends State<AudioExample> with TickerProviderStateMix
 
   Stream<PositionData> get _positionDataStream =>
       Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
-          _player.positionStream,
-          _player.bufferedPositionStream,
-          _player.durationStream,
-          (position, bufferedPosition, duration) =>
-              PositionData(position, bufferedPosition, duration ?? Duration.zero));
+        _player.positionStream,
+        _player.bufferedPositionStream,
+        _player.durationStream,
+        (position, bufferedPosition, duration) => PositionData(
+          position,
+          bufferedPosition,
+          duration ?? Duration.zero,
+        ),
+      );
 }
