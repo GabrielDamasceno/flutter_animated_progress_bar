@@ -256,8 +256,10 @@ class ProgressBar extends LeafRenderObjectWidget {
       collapsedProgressBarColor: collapsedProgressBarColor,
       collapsedBufferedBarColor: collapsedBufferedBarColor,
       collapsedThumbColor: collapsedThumbColor,
-      expandedProgressBarColor: expandedProgressBarColor ?? collapsedProgressBarColor,
-      expandedBufferedBarColor: expandedBufferedBarColor ?? collapsedBufferedBarColor,
+      expandedProgressBarColor:
+          expandedProgressBarColor ?? collapsedProgressBarColor,
+      expandedBufferedBarColor:
+          expandedBufferedBarColor ?? collapsedBufferedBarColor,
       expandedThumbColor: expandedThumbColor ?? collapsedThumbColor,
       lerpColorsTransition: lerpColorsTransition,
       showBufferedWhenCollapsed: showBufferedWhenCollapsed,
@@ -270,7 +272,8 @@ class ProgressBar extends LeafRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, covariant RenderProgressBar renderObject) {
+  void updateRenderObject(
+      BuildContext context, covariant RenderProgressBar renderObject) {
     renderObject
       ..controller = controller
       ..progress = progress
@@ -288,8 +291,10 @@ class ProgressBar extends LeafRenderObjectWidget {
       ..collapsedProgressBarColor = collapsedProgressBarColor
       ..collapsedBufferedBarColor = collapsedBufferedBarColor
       ..collapsedThumbColor = collapsedThumbColor
-      ..expandedProgressBarColor = expandedProgressBarColor ?? collapsedProgressBarColor
-      ..expandedBufferedBarColor = expandedBufferedBarColor ?? collapsedBufferedBarColor
+      ..expandedProgressBarColor =
+          expandedProgressBarColor ?? collapsedProgressBarColor
+      ..expandedBufferedBarColor =
+          expandedBufferedBarColor ?? collapsedBufferedBarColor
       ..expandedThumbColor = expandedThumbColor ?? collapsedThumbColor
       ..lerpColorsTransition = lerpColorsTransition
       ..showBufferedWhenCollapsed = showBufferedWhenCollapsed

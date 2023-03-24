@@ -60,7 +60,8 @@ class CombinedSimulation extends Simulation {
   final List<FiniteSimulation> simulations;
 
   /// Creates an [CombinedSimulation] that combines a list of [FiniteSimulation]s.
-  CombinedSimulation({required this.simulations}) : assert(simulations.isNotEmpty) {
+  CombinedSimulation({required this.simulations})
+      : assert(simulations.isNotEmpty) {
     currentIndex = 0;
     timeOffset = 0.0;
   }

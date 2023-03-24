@@ -215,7 +215,12 @@ class ProgressBarController extends ChangeNotifier {
         InterpolationSimulation(
           begin: _barValue,
           end: 1.0,
-          totalDuration: _computeSimulationDuration(0.0, 1.0, _barValue, barAnimationDuration),
+          totalDuration: _computeSimulationDuration(
+            0.0,
+            1.0,
+            _barValue,
+            barAnimationDuration,
+          ),
         ),
         InterpolationSimulation(
           begin: 1.0,
@@ -250,7 +255,12 @@ class ProgressBarController extends ChangeNotifier {
     _barSimulation = InterpolationSimulation(
       begin: _barValue,
       end: end,
-      totalDuration: _computeSimulationDuration(begin, end, _barValue, barAnimationDuration),
+      totalDuration: _computeSimulationDuration(
+        begin,
+        end,
+        _barValue,
+        barAnimationDuration,
+      ),
     );
 
     return _barTicker.start();
@@ -273,7 +283,12 @@ class ProgressBarController extends ChangeNotifier {
     _barSimulation = InterpolationSimulation(
       begin: _barValue,
       end: end,
-      totalDuration: _computeSimulationDuration(begin, end, _barValue, barAnimationDuration),
+      totalDuration: _computeSimulationDuration(
+        begin,
+        end,
+        _barValue,
+        barAnimationDuration,
+      ),
     );
 
     return _barTicker.start();
@@ -296,7 +311,12 @@ class ProgressBarController extends ChangeNotifier {
     _thumbSimulation = InterpolationSimulation(
       begin: _thumbValue,
       end: end,
-      totalDuration: _computeSimulationDuration(begin, end, _thumbValue, thumbAnimationDuration),
+      totalDuration: _computeSimulationDuration(
+        begin,
+        end,
+        _thumbValue,
+        thumbAnimationDuration,
+      ),
     );
 
     return _thumbTicker.start();
@@ -319,7 +339,12 @@ class ProgressBarController extends ChangeNotifier {
     _thumbSimulation = InterpolationSimulation(
       begin: _thumbValue,
       end: end,
-      totalDuration: _computeSimulationDuration(begin, end, _thumbValue, thumbAnimationDuration),
+      totalDuration: _computeSimulationDuration(
+        begin,
+        end,
+        _thumbValue,
+        thumbAnimationDuration,
+      ),
     );
 
     return _thumbTicker.start();
@@ -372,9 +397,15 @@ class ProgressBarController extends ChangeNotifier {
     super.dispose();
   }
 
-  Duration _computeSimulationDuration(double begin, double end, double value, Duration duration) {
+  Duration _computeSimulationDuration(
+    double begin,
+    double end,
+    double value,
+    Duration duration,
+  ) {
     final double range = end - begin;
-    final double remainingFraction = range.isFinite ? (end - value) / range : 1.0;
+    final double remainingFraction =
+        range.isFinite ? (end - value) / range : 1.0;
     return duration * remainingFraction.abs();
   }
 

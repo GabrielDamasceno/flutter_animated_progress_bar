@@ -6,7 +6,9 @@ void main() {
   testWidgets(
     'ProgressBar exists',
     (WidgetTester tester) async {
-      final ProgressBarController controller = ProgressBarController(vsync: const TestVSync());
+      final ProgressBarController controller = ProgressBarController(
+        vsync: const TestVSync(),
+      );
 
       await tester.pumpWidget(
         ProgressBar(
@@ -25,7 +27,9 @@ void main() {
   testWidgets(
     'Should be able to handle total when duration == Duration.zero',
     (WidgetTester tester) async {
-      final ProgressBarController controller = ProgressBarController(vsync: const TestVSync());
+      final ProgressBarController controller = ProgressBarController(
+        vsync: const TestVSync(),
+      );
       Duration progress = Duration.zero;
 
       await tester.pumpWidget(
@@ -56,8 +60,11 @@ void main() {
   );
 
   group('Gesture tests:', () {
-    testWidgets('Tap gesture can change its progress', (WidgetTester tester) async {
-      final ProgressBarController controller = ProgressBarController(vsync: const TestVSync());
+    testWidgets('Tap gesture can change its progress',
+        (WidgetTester tester) async {
+      final ProgressBarController controller = ProgressBarController(
+        vsync: const TestVSync(),
+      );
       Duration progress = Duration.zero;
 
       await tester.pumpWidget(
@@ -89,8 +96,11 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('Drag gesture can change its progress', (WidgetTester tester) async {
-      final ProgressBarController controller = ProgressBarController(vsync: const TestVSync());
+    testWidgets('Drag gesture can change its progress',
+        (WidgetTester tester) async {
+      final ProgressBarController controller = ProgressBarController(
+        vsync: const TestVSync(),
+      );
       Duration progress = Duration.zero;
 
       await tester.pumpWidget(
@@ -123,8 +133,11 @@ void main() {
   });
 
   group('Callbacks tests:', () {
-    testWidgets('onSeek, onChangeStart and onChangeEnd fire once', (WidgetTester tester) async {
-      final ProgressBarController controller = ProgressBarController(vsync: const TestVSync());
+    testWidgets('onSeek, onChangeStart and onChangeEnd fire once',
+        (WidgetTester tester) async {
+      final ProgressBarController controller = ProgressBarController(
+        vsync: const TestVSync(),
+      );
       int seekfired = 0;
       int startFired = 0;
       int endFired = 0;

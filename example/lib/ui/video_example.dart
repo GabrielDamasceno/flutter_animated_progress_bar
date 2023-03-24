@@ -23,7 +23,8 @@ class VideoExample extends StatefulWidget {
   }
 }
 
-class _VideoExampleState extends State<VideoExample> with TickerProviderStateMixin {
+class _VideoExampleState extends State<VideoExample>
+    with TickerProviderStateMixin {
   late final ProgressBarController _progressBarController;
   late final VideoPlayerController _videoPlayerController;
 
@@ -81,7 +82,9 @@ class _VideoExampleState extends State<VideoExample> with TickerProviderStateMix
                             });
                           },
                           icon: Icon(
-                            _videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                            _videoPlayerController.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow,
                           ),
                         ),
                       )
@@ -101,16 +104,20 @@ class _VideoExampleState extends State<VideoExample> with TickerProviderStateMix
                               value.duration,
                             );
                             final Duration progress = positionData.position;
-                            final Duration buffered = positionData.bufferedPosition;
+                            final Duration buffered =
+                                positionData.bufferedPosition;
                             final Duration total = positionData.duration;
 
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0,
+                                  ),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(progress.formatToTime()),
                                       Text(total.formatToTime())

@@ -18,7 +18,8 @@ class AlignmentExample extends StatefulWidget {
   }
 }
 
-class _AlignmentExampleState extends State<AlignmentExample> with TickerProviderStateMixin {
+class _AlignmentExampleState extends State<AlignmentExample>
+    with TickerProviderStateMixin {
   late final ProgressBarController _controller1;
   late final ProgressBarController _controller2;
 

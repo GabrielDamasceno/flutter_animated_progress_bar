@@ -97,9 +97,18 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _Duration(label: 'Bar duration', duration: _controller.barAnimationDuration),
-                  _Duration(label: 'Thumb duration', duration: _controller.thumbAnimationDuration),
-                  _Duration(label: 'Waiting duration', duration: _controller.waitingDuration),
+                  _Duration(
+                    label: 'Bar duration',
+                    duration: _controller.barAnimationDuration,
+                  ),
+                  _Duration(
+                    label: 'Thumb duration',
+                    duration: _controller.thumbAnimationDuration,
+                  ),
+                  _Duration(
+                    label: 'Waiting duration',
+                    duration: _controller.waitingDuration,
+                  ),
                 ],
               ),
             ],
@@ -113,8 +122,14 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _Color(label: 'Background bar', color: _backgroundBarColor),
-                  _Color(label: 'Collapsed progress bar', color: _collapsedProgressBarColor),
-                  _Color(label: 'Collapsed buffered bar', color: _collapsedBufferedBarColor),
+                  _Color(
+                    label: 'Collapsed progress bar',
+                    color: _collapsedProgressBarColor,
+                  ),
+                  _Color(
+                    label: 'Collapsed buffered bar',
+                    color: _collapsedBufferedBarColor,
+                  ),
                   _Color(label: 'Collapsed thumb', color: _collapsedThumbColor),
                 ],
               ),
@@ -122,10 +137,22 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _Color(label: 'Expanded progress bar', color: _expandedProgressBarColor),
-                  _Color(label: 'Expanded buffered bar', color: _expandedBufferedBarColor),
-                  _Color(label: 'Expanded thumb', color: _expandedThumbColor),
-                  _Color(label: 'Thumb glow', color: _thumbGlowColor),
+                  _Color(
+                    label: 'Expanded progress bar',
+                    color: _expandedProgressBarColor,
+                  ),
+                  _Color(
+                    label: 'Expanded buffered bar',
+                    color: _expandedBufferedBarColor,
+                  ),
+                  _Color(
+                    label: 'Expanded thumb',
+                    color: _expandedThumbColor,
+                  ),
+                  _Color(
+                    label: 'Thumb glow',
+                    color: _thumbGlowColor,
+                  ),
                 ],
               ),
             ],
@@ -164,7 +191,12 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Alignment:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Alignment:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(width: 10.0),
               DropdownButton(
                 value: _alignment,
@@ -178,7 +210,12 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Bar cap:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Bar cap:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(width: 10.0),
               DropdownButton(
                 value: _barCapShape,
@@ -211,7 +248,8 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
             value: _progress.inMicroseconds / _total.inMicroseconds,
             onChanged: (value) {
               setState(
-                () => _progress = Duration(microseconds: (value * _total.inMicroseconds).round()),
+                () => _progress = Duration(
+                    microseconds: (value * _total.inMicroseconds).round()),
               );
             },
           ),
@@ -219,9 +257,11 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
             label: 'Buffered',
             value: _buffered.inMicroseconds / _total.inMicroseconds,
             onChanged: (value) {
-              setState(
-                () => _buffered = Duration(microseconds: (value * _total.inMicroseconds).round()),
-              );
+              setState(() {
+                _buffered = Duration(
+                  microseconds: (value * _total.inMicroseconds).round(),
+                );
+              });
             },
           ),
           AnimatedBuilder(
