@@ -83,7 +83,7 @@ class ProgressBarController extends ChangeNotifier {
   /// if there are no more gesture interactions. Used by [forward] method.
   ProgressBarController({
     required TickerProvider vsync,
-    this.barAnimationDuration = const Duration(milliseconds: 200),
+    this.barAnimationDuration = const Duration(milliseconds: 300),
     this.thumbAnimationDuration = const Duration(milliseconds: 100),
     this.waitingDuration = const Duration(seconds: 2),
   }) {

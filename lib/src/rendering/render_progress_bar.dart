@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/controller.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/enums.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/progress_indicator_shapes.dart';
+import 'package:flutter_animated_progress_bar/src/widgets/progress_bar.dart';
 
 class RenderProgressBar extends RenderBox {
   RenderProgressBar({
@@ -15,6 +18,7 @@ class RenderProgressBar extends RenderBox {
     required Duration total,
     required ProgressBarAlignment alignment,
     required BarCapShape barCapShape,
+    required ProgressIndicatorShape progressIndicatorShape,
     required double collapsedBarHeight,
     required double collapsedThumbRadius,
     required double expandedBarHeight,
@@ -30,6 +34,7 @@ class RenderProgressBar extends RenderBox {
     required Color collapsedThumbColor,
     required bool lerpColorsTransition,
     required bool showBufferedWhenCollapsed,
+    required this.progressBarState,
     required this.onSeek,
     this.onChanged,
     this.onChangeStart,
@@ -41,6 +46,7 @@ class RenderProgressBar extends RenderBox {
         _total = total,
         _alignment = alignment,
         _barCapShape = barCapShape,
+        _progressIndicatorShape = progressIndicatorShape,
         _collapsedBarHeight = collapsedBarHeight,
         _collapsedThumbRadius = collapsedThumbRadius,
         _expandedBarHeight = expandedBarHeight,
@@ -57,6 +63,7 @@ class RenderProgressBar extends RenderBox {
         _lerpColorsTransition = lerpColorsTransition,
         _showBufferedWhenCollapsed = showBufferedWhenCollapsed,
         _semanticsFormatter = semanticsFormatter {
+    _progressTextPainter = TextPainter();
     _horizontalDragGestureRecognizer = HorizontalDragGestureRecognizer()
       ..onStart = _onStartHorizontalRecognizer
       ..onEnd = _onEndHorizontalRecognizer
@@ -65,6 +72,7 @@ class RenderProgressBar extends RenderBox {
       ..onTapUp = _onTapUpRecognizer;
   }
 
+  final ProgressBarState progressBarState;
   final ValueChanged<Duration> onSeek;
   final ValueChanged<Duration>? onChanged;
   final ValueChanged<Duration>? onChangeStart;
@@ -73,9 +81,10 @@ class RenderProgressBar extends RenderBox {
   late final HorizontalDragGestureRecognizer _horizontalDragGestureRecognizer;
   late final TapGestureRecognizer _tapGestureRecognizer;
 
+  late final TextPainter _progressTextPainter;
+
   late bool _isDragging = false;
-  late double _dxThumb = 0.0;
-  late double _dyThumb = 0.0;
+  late Offset _position = Offset.zero;
   late double _effectiveThumbRadius;
   late double _effectiveBarHeight;
 
@@ -140,6 +149,15 @@ class RenderProgressBar extends RenderBox {
     if (_barCapShape == newValue) return;
 
     _barCapShape = newValue;
+    markNeedsPaint();
+  }
+
+  late ProgressIndicatorShape _progressIndicatorShape;
+  ProgressIndicatorShape get progressIndicatorShape => _progressIndicatorShape;
+  set progressIndicatorShape(ProgressIndicatorShape newValue) {
+    if (_progressIndicatorShape == newValue) return;
+
+    _progressIndicatorShape = newValue;
     markNeedsPaint();
   }
 
@@ -301,30 +319,27 @@ class RenderProgressBar extends RenderBox {
 
   void _onStartHorizontalRecognizer(DragStartDetails details) {
     _isDragging = true;
-
-    final double localPosition = _clampLocalPosition(details.localPosition.dx);
-    _dxThumb = localPosition;
+    _position = _clampPositionBySize(details.localPosition);
 
     _controller.expandBar();
     _controller.expandThumb();
 
-    onChangeStart?.call(_positionToDuration(_dxThumb));
+    onChangeStart?.call(_positionToDuration(_position.dx));
 
     markNeedsPaint();
   }
 
   void _onUpdateHorizontalRecognizer(DragUpdateDetails details) {
-    final double localPosition = _clampLocalPosition(details.localPosition.dx);
-    _dxThumb = localPosition;
+    _position = _clampPositionBySize(details.localPosition);
 
-    onChanged?.call(_positionToDuration(_dxThumb));
+    onChanged?.call(_positionToDuration(_position.dx));
 
     markNeedsPaint();
   }
 
   void _onEndHorizontalRecognizer(DragEndDetails details) {
     _isDragging = false;
-    _progress = _positionToDuration(_dxThumb);
+    _progress = _positionToDuration(_position.dx);
 
     _controller.forward();
     _controller.collapseThumb();
@@ -415,13 +430,15 @@ class RenderProgressBar extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (!_isDragging) _dxThumb = _durationToPosition(_progress, total);
-    _dyThumb = _computeDyThumb();
+    _position = Offset(
+      (_isDragging) ? _position.dx : _durationToPosition(_progress, total),
+      _computeDyPosition(),
+    );
 
     _drawBackground(context.canvas);
     _drawBuffered(context.canvas);
     _drawProgress(context.canvas);
-    _drawThumb(context.canvas);
+    _drawThumbComponents(context);
   }
 
   void _drawBackground(Canvas canvas) {
@@ -471,7 +488,12 @@ class RenderProgressBar extends RenderBox {
   }
 
   RRect _barRRect({required double width}) {
-    final Rect rect = Rect.fromLTWH(0.0, _dyThumb, width, _effectiveBarHeight);
+    final Rect rect = Rect.fromLTWH(
+      0.0,
+      _position.dy - (_effectiveBarHeight / 2),
+      width,
+      _effectiveBarHeight,
+    );
     late final Radius radius;
 
     if (_barCapShape == BarCapShape.round) {
@@ -479,13 +501,13 @@ class RenderProgressBar extends RenderBox {
       return RRect.fromRectAndRadius(rect, radius);
     } else if (_barCapShape == BarCapShape.square) {
       radius = Radius.circular(_effectiveThumbRadius);
-      if ((_dxThumb - _effectiveThumbRadius) <= 0) {
+      if ((_position.dy - _effectiveThumbRadius) <= 0) {
         return RRect.fromRectAndCorners(
           rect,
           topLeft: radius,
           bottomLeft: radius,
         );
-      } else if ((_dxThumb + _effectiveThumbRadius) >= size.width &&
+      } else if ((_position.dy + _effectiveThumbRadius) >= size.width &&
           width >= size.width) {
         return RRect.fromRectAndCorners(
           rect,
@@ -498,7 +520,19 @@ class RenderProgressBar extends RenderBox {
     return RRect.fromRectAndCorners(rect);
   }
 
-  void _drawThumb(Canvas canvas) {
+  void _drawThumbComponents(PaintingContext context) {
+    progressBarState.paintThumbComponents = (
+      PaintingContext context,
+      Offset offset,
+    ) {
+      if (attached) {
+        _drawThumb(context, offset);
+        _drawProgressIndicator(context, offset);
+      }
+    };
+  }
+
+  void _drawThumb(PaintingContext context, Offset offset) {
     final Paint thumbGlowPaint = Paint()..color = _thumbGlowColor;
     final Paint thumbPaint = Paint()
       ..color = _transformColor(
@@ -507,23 +541,36 @@ class RenderProgressBar extends RenderBox {
         _controller.thumbValue,
       );
 
-    final double dy = _dyThumb + _effectiveBarHeight / 2;
     final double dx = clampDouble(
-      _dxThumb,
+      _position.dx,
       _effectiveThumbRadius,
       size.width - _effectiveThumbRadius,
     );
-    final Offset offset = Offset(dx, dy);
+    final Offset center = Offset(dx, _position.dy) + offset;
 
-    if (_isDragging && _thumbGlowRadius > 0.0) {
-      canvas.drawCircle(
-        offset,
+    if (_thumbGlowRadius > 0.0) {
+      context.canvas.drawCircle(
+        center,
         _thumbGlowRadius * _controller.thumbValue,
         thumbGlowPaint,
       );
     }
 
-    canvas.drawCircle(offset, _effectiveThumbRadius, thumbPaint);
+    context.canvas.drawCircle(center, _effectiveThumbRadius, thumbPaint);
+  }
+
+  void _drawProgressIndicator(PaintingContext context, Offset offset) {
+    _progressIndicatorShape.paint(
+      context,
+      controller: _controller,
+      size: size,
+      position: _position + offset,
+      thumbRadius: _effectiveThumbRadius,
+      barHeight: _effectiveBarHeight,
+      progress: _progress,
+      total: _total,
+      textPainter: _progressTextPainter,
+    );
   }
 
   Color _transformColor(Color expanded, Color collapsed, double value) {
@@ -542,20 +589,13 @@ class RenderProgressBar extends RenderBox {
     return Color.lerp(collapsed, expanded, t) ?? expanded;
   }
 
-  double _computeDyThumb() {
+  double _computeDyPosition() {
     late final double dy;
-    final double thumbDiameter = _effectiveThumbRadius * 2;
 
     if (_alignment == ProgressBarAlignment.bottom) {
-      if (thumbDiameter > _effectiveBarHeight) {
-        dy = size.height -
-            _effectiveBarHeight -
-            (_effectiveThumbRadius - _effectiveBarHeight / 2);
-      } else {
-        dy = size.height - _effectiveBarHeight;
-      }
+      dy = size.height - (_effectiveBarHeight / 2);
     } else {
-      dy = (size.height / 2) - (_effectiveBarHeight / 2);
+      dy = size.height / 2;
     }
 
     return dy;
@@ -572,6 +612,13 @@ class RenderProgressBar extends RenderBox {
   double _durationToPosition(Duration progress, Duration total) {
     final double value = _progressValue(progress, total);
     return clampDouble(value * size.width, 0.0, size.width);
+  }
+
+  Offset _clampPositionBySize(Offset position) {
+    final double dx = clampDouble(position.dx, 0.0, size.width);
+    final double dy = clampDouble(position.dy, 0.0, size.height);
+
+    return Offset(dx, dy);
   }
 
   Duration _positionToDuration(double position) {
@@ -737,6 +784,7 @@ class RenderProgressBar extends RenderBox {
 
   @override
   void dispose() {
+    _progressTextPainter.dispose();
     _horizontalDragGestureRecognizer.dispose();
     _tapGestureRecognizer.dispose();
 
