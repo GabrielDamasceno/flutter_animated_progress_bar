@@ -260,6 +260,7 @@ class ProgressBarState extends State<ProgressBar> {
   @override
   void initState() {
     super.initState();
+    widget.controller.addListener(_showThumbComponents);
     positionNotifier = ValueNotifier(widget.progress);
     _renderProgressBarGlobalKey = GlobalKey();
     _layerLink = LayerLink();
@@ -267,9 +268,11 @@ class ProgressBarState extends State<ProgressBar> {
 
   @override
   void dispose() {
+    widget.controller.removeListener(_showThumbComponents);
     positionNotifier.dispose();
     overlayEntry?.remove();
     overlayEntry?.dispose();
+    overlayEntry = null;
     super.dispose();
   }
 
@@ -328,6 +331,7 @@ class ProgressBarState extends State<ProgressBar> {
         builder: (BuildContext context) {
           return CompositedTransformFollower(
             link: _layerLink,
+            showWhenUnlinked: false,
             child: RenderThumbComponentsWidget(
               controller: widget.controller,
               progressBarState: this,

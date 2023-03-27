@@ -14,9 +14,9 @@ class RenderThumbComponents extends RenderBox {
   set controller(ProgressBarController newValue) {
     if (_controller == newValue) return;
 
-    if (attached) _controller.removeListener(_controllerListener);
+    if (attached) _controller.removeListener(markNeedsPaint);
     _controller = newValue;
-    if (attached) _controller.addListener(_controllerListener);
+    if (attached) _controller.addListener(markNeedsPaint);
     markNeedsLayout();
   }
 
@@ -41,23 +41,15 @@ class RenderThumbComponents extends RenderBox {
   @override
   void attach(PipelineOwner owner) {
     super.attach(owner);
-    _controller.addListener(_controllerListener);
+    _controller.addListener(markNeedsPaint);
     _progressBarState.positionNotifier.addListener(markNeedsPaint);
   }
 
   @override
   void detach() {
-    _controller.removeListener(_controllerListener);
+    _controller.removeListener(markNeedsPaint);
     _progressBarState.positionNotifier.removeListener(markNeedsPaint);
     super.detach();
-  }
-
-  void _controllerListener() {
-    if (_controller.barValue == 0.0) {
-      _progressBarState.overlayEntry?.remove();
-      _progressBarState.overlayEntry = null;
-    }
-    markNeedsPaint();
   }
 
   @override

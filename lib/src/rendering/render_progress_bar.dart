@@ -501,13 +501,13 @@ class RenderProgressBar extends RenderBox {
       return RRect.fromRectAndRadius(rect, radius);
     } else if (_barCapShape == BarCapShape.square) {
       radius = Radius.circular(_effectiveThumbRadius);
-      if ((_position.dy - _effectiveThumbRadius) <= 0) {
+      if ((_position.dx - _effectiveThumbRadius) <= 0) {
         return RRect.fromRectAndCorners(
           rect,
           topLeft: radius,
           bottomLeft: radius,
         );
-      } else if ((_position.dy + _effectiveThumbRadius) >= size.width &&
+      } else if ((_position.dx + _effectiveThumbRadius) >= size.width &&
           width >= size.width) {
         return RRect.fromRectAndCorners(
           rect,
