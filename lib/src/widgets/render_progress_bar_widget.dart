@@ -13,7 +13,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
     required this.total,
     required this.alignment,
     required this.barCapShape,
-    required this.progressIndicatorShape,
+    required this.progressBarIndicator,
     required this.collapsedBarHeight,
     required this.collapsedThumbRadius,
     required this.expandedBarHeight,
@@ -43,7 +43,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
   final Duration total;
   final ProgressBarAlignment alignment;
   final BarCapShape barCapShape;
-  final ProgressIndicatorShape progressIndicatorShape;
+  final ProgressBarIndicator progressBarIndicator;
   final double collapsedBarHeight;
   final double collapsedThumbRadius;
   final double expandedBarHeight;
@@ -75,7 +75,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
       total: total,
       alignment: alignment,
       barCapShape: barCapShape,
-      progressIndicatorShape: progressIndicatorShape,
+      progressBarIndicator: progressBarIndicator,
       collapsedBarHeight: collapsedBarHeight,
       collapsedThumbRadius: collapsedThumbRadius,
       expandedBarHeight: expandedBarHeight,
@@ -114,7 +114,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
       ..total = total
       ..alignment = alignment
       ..barCapShape = barCapShape
-      ..progressIndicatorShape = progressIndicatorShape
+      ..progressBarIndicator = progressBarIndicator
       ..collapsedBarHeight = collapsedBarHeight
       ..collapsedThumbRadius = collapsedThumbRadius
       ..expandedBarHeight = expandedBarHeight

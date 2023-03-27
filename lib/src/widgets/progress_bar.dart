@@ -1,7 +1,7 @@
 import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/controller.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/enums.dart';
-import 'package:flutter_animated_progress_bar/src/foundation/progress_indicator_shapes.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/progress_bar_indicators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_progress_bar/src/widgets/render_progress_bar_widget.dart';
 import 'package:flutter_animated_progress_bar/src/widgets/render_thumb_components_widget.dart';
@@ -77,8 +77,7 @@ class ProgressBar extends StatefulWidget {
     required this.total,
     this.alignment = ProgressBarAlignment.center,
     this.barCapShape = BarCapShape.square,
-    this.progressIndicatorShape =
-        const RoundedRectangularProgressIndicatorShape(),
+    this.progressBarIndicator = const RoundedRectangularProgressBarIndicator(),
     this.collapsedBarHeight = 5.0,
     this.collapsedThumbRadius = 8.0,
     this.expandedBarHeight = 7.0,
@@ -136,7 +135,7 @@ class ProgressBar extends StatefulWidget {
   /// Defaults to `BarCapShape.square`.
   final BarCapShape barCapShape;
 
-  final ProgressIndicatorShape progressIndicatorShape;
+  final ProgressBarIndicator progressBarIndicator;
 
   /// The smallest size of this bar.
   ///
@@ -288,7 +287,7 @@ class ProgressBarState extends State<ProgressBar> {
         total: widget.total,
         alignment: widget.alignment,
         barCapShape: widget.barCapShape,
-        progressIndicatorShape: widget.progressIndicatorShape,
+        progressBarIndicator: widget.progressBarIndicator,
         collapsedBarHeight: widget.collapsedBarHeight,
         collapsedThumbRadius: widget.collapsedThumbRadius,
         expandedBarHeight: widget.expandedBarHeight,

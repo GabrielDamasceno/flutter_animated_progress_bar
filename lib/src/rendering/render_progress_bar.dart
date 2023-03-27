@@ -7,7 +7,7 @@ import 'package:flutter_animated_progress_bar/src/foundation/enums.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_animated_progress_bar/src/foundation/progress_indicator_shapes.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/progress_bar_indicators.dart';
 import 'package:flutter_animated_progress_bar/src/widgets/progress_bar.dart';
 
 class RenderProgressBar extends RenderBox {
@@ -18,7 +18,7 @@ class RenderProgressBar extends RenderBox {
     required Duration total,
     required ProgressBarAlignment alignment,
     required BarCapShape barCapShape,
-    required ProgressIndicatorShape progressIndicatorShape,
+    required ProgressBarIndicator progressBarIndicator,
     required double collapsedBarHeight,
     required double collapsedThumbRadius,
     required double expandedBarHeight,
@@ -46,7 +46,7 @@ class RenderProgressBar extends RenderBox {
         _total = total,
         _alignment = alignment,
         _barCapShape = barCapShape,
-        _progressIndicatorShape = progressIndicatorShape,
+        _progressBarIndicator = progressBarIndicator,
         _collapsedBarHeight = collapsedBarHeight,
         _collapsedThumbRadius = collapsedThumbRadius,
         _expandedBarHeight = expandedBarHeight,
@@ -152,12 +152,12 @@ class RenderProgressBar extends RenderBox {
     markNeedsPaint();
   }
 
-  late ProgressIndicatorShape _progressIndicatorShape;
-  ProgressIndicatorShape get progressIndicatorShape => _progressIndicatorShape;
-  set progressIndicatorShape(ProgressIndicatorShape newValue) {
-    if (_progressIndicatorShape == newValue) return;
+  late ProgressBarIndicator _progressBarIndicator;
+  ProgressBarIndicator get progressBarIndicator => _progressBarIndicator;
+  set progressBarIndicator(ProgressBarIndicator newValue) {
+    if (_progressBarIndicator == newValue) return;
 
-    _progressIndicatorShape = newValue;
+    _progressBarIndicator = newValue;
     markNeedsPaint();
   }
 
@@ -560,7 +560,7 @@ class RenderProgressBar extends RenderBox {
   }
 
   void _drawProgressIndicator(PaintingContext context, Offset offset) {
-    _progressIndicatorShape.paint(
+    _progressBarIndicator.paint(
       context,
       controller: _controller,
       size: size,

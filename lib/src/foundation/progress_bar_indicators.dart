@@ -6,8 +6,8 @@ import 'package:flutter_animated_progress_bar/flutter_animated_progress_bar.dart
 import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:flutter_animated_progress_bar/src/utils/formatters.dart';
 
-abstract class ProgressIndicatorShape {
-  const ProgressIndicatorShape();
+abstract class ProgressBarIndicator {
+  const ProgressBarIndicator();
 
   void paint(
     PaintingContext context, {
@@ -21,10 +21,10 @@ abstract class ProgressIndicatorShape {
     required TextPainter textPainter,
   });
 
-  static const ProgressIndicatorShape none = _NoProgressIndicator();
+  static const ProgressBarIndicator none = _NoProgressIndicator();
 }
 
-class _NoProgressIndicator extends ProgressIndicatorShape {
+class _NoProgressIndicator extends ProgressBarIndicator {
   const _NoProgressIndicator();
 
   @override
@@ -43,8 +43,8 @@ class _NoProgressIndicator extends ProgressIndicatorShape {
   }
 }
 
-class RoundedRectangularProgressIndicatorShape extends ProgressIndicatorShape {
-  const RoundedRectangularProgressIndicatorShape({
+class RoundedRectangularProgressBarIndicator extends ProgressBarIndicator {
+  const RoundedRectangularProgressBarIndicator({
     this.padding = const EdgeInsets.all(8.0),
     this.curve = Curves.fastOutSlowIn,
     this.borderRadius = const Radius.circular(4.0),
@@ -144,8 +144,8 @@ class RoundedRectangularProgressIndicatorShape extends ProgressIndicatorShape {
   }
 }
 
-class CircularProgressIndicatorShape extends ProgressIndicatorShape {
-  const CircularProgressIndicatorShape({
+class CircularProgressBarIndicator extends ProgressBarIndicator {
+  const CircularProgressBarIndicator({
     this.padding = const EdgeInsets.symmetric(horizontal: 5.0),
     this.curve = Curves.fastOutSlowIn,
     this.backgroundColor = Colors.red,
