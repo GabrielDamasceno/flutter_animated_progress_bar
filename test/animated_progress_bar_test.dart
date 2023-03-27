@@ -33,17 +33,19 @@ void main() {
       Duration progress = Duration.zero;
 
       await tester.pumpWidget(
-        StatefulBuilder(
-          builder: (context, setState) {
-            return ProgressBar(
-              controller: controller,
-              progress: progress,
-              total: Duration.zero,
-              onSeek: (value) {
-                setState(() => progress = value);
-              },
-            );
-          },
+        MaterialApp(
+          home: StatefulBuilder(
+            builder: (context, setState) {
+              return ProgressBar(
+                controller: controller,
+                progress: progress,
+                total: Duration.zero,
+                onSeek: (value) {
+                  setState(() => progress = value);
+                },
+              );
+            },
+          ),
         ),
       );
 
@@ -68,17 +70,19 @@ void main() {
       Duration progress = Duration.zero;
 
       await tester.pumpWidget(
-        StatefulBuilder(
-          builder: (context, setState) {
-            return ProgressBar(
-              controller: controller,
-              progress: progress,
-              total: const Duration(minutes: 1),
-              onSeek: (value) {
-                setState(() => progress = value);
-              },
-            );
-          },
+        MaterialApp(
+          home: StatefulBuilder(
+            builder: (context, setState) {
+              return ProgressBar(
+                controller: controller,
+                progress: progress,
+                total: const Duration(minutes: 1),
+                onSeek: (value) {
+                  setState(() => progress = value);
+                },
+              );
+            },
+          ),
         ),
       );
 
@@ -104,17 +108,19 @@ void main() {
       Duration progress = Duration.zero;
 
       await tester.pumpWidget(
-        StatefulBuilder(
-          builder: (context, setState) {
-            return ProgressBar(
-              controller: controller,
-              progress: progress,
-              total: const Duration(minutes: 1),
-              onSeek: (value) {
-                setState(() => progress = value);
-              },
-            );
-          },
+        MaterialApp(
+          home: StatefulBuilder(
+            builder: (context, setState) {
+              return ProgressBar(
+                controller: controller,
+                progress: progress,
+                total: const Duration(minutes: 1),
+                onSeek: (value) {
+                  setState(() => progress = value);
+                },
+              );
+            },
+          ),
         ),
       );
 
