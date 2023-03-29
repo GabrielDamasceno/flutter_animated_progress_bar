@@ -57,91 +57,102 @@ class _VideoExampleState extends State<VideoExample>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Video example')),
-      body: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Listener(
-          onPointerUp: (event) {
-            setState(() => _showControls = true);
-            _initializeTimer();
-          },
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              VideoPlayer(_videoPlayerController),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                child: (_showControls)
-                    ? Align(
-                        child: IconButton(
-                          iconSize: 40.0,
-                          onPressed: () {
-                            setState(() {
-                              _videoPlayerController.value.isPlaying
-                                  ? _videoPlayerController.pause()
-                                  : _videoPlayerController.play();
-                            });
-                          },
-                          icon: Icon(
-                            _videoPlayerController.value.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow,
-                          ),
-                        ),
-                      )
-                    : const SizedBox(),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: (_showControls)
-                      ? ValueListenableBuilder(
-                          valueListenable: _videoPlayerController,
-                          builder: (context, value, child) {
-                            final PositionData positionData = PositionData(
-                              value.position,
-                              value.buffered.lastOrNull?.end ?? Duration.zero,
-                              value.duration,
-                            );
-                            final Duration progress = positionData.position;
-                            final Duration buffered =
-                                positionData.bufferedPosition;
-                            final Duration total = positionData.duration;
+      body: Column(
+        children: [
+          AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Listener(
+              onPointerUp: (event) {
+                setState(() => _showControls = true);
+                _initializeTimer();
+              },
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  VideoPlayer(_videoPlayerController),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    child: (_showControls)
+                        ? Align(
+                            child: IconButton(
+                              iconSize: 40.0,
+                              onPressed: () {
+                                setState(() {
+                                  _videoPlayerController.value.isPlaying
+                                      ? _videoPlayerController.pause()
+                                      : _videoPlayerController.play();
+                                });
+                              },
+                              icon: Icon(
+                                _videoPlayerController.value.isPlaying
+                                    ? Icons.pause
+                                    : Icons.play_arrow,
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: (_showControls)
+                          ? ValueListenableBuilder(
+                              valueListenable: _videoPlayerController,
+                              builder: (context, value, child) {
+                                final PositionData positionData = PositionData(
+                                  value.position,
+                                  value.buffered.lastOrNull?.end ??
+                                      Duration.zero,
+                                  value.duration,
+                                );
+                                final Duration progress = positionData.position;
+                                final Duration buffered =
+                                    positionData.bufferedPosition;
+                                final Duration total = positionData.duration;
 
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(progress.formatToTime()),
-                                      Text(total.formatToTime())
-                                    ],
-                                  ),
-                                ),
-                                ProgressBar(
-                                  controller: _progressBarController,
-                                  progress: progress,
-                                  buffered: buffered,
-                                  total: total,
-                                  alignment: ProgressBarAlignment.bottom,
-                                  onSeek: _videoPlayerController.seekTo,
-                                ),
-                              ],
-                            );
-                          },
-                        )
-                      : const SizedBox(),
-                ),
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(progress.formatToTime()),
+                                          Text(total.formatToTime())
+                                        ],
+                                      ),
+                                    ),
+                                    ProgressBar(
+                                      controller: _progressBarController,
+                                      progress: progress,
+                                      buffered: buffered,
+                                      total: total,
+                                      alignment: ProgressBarAlignment.bottom,
+                                      onSeek: _videoPlayerController.seekTo,
+                                    ),
+                                  ],
+                                );
+                              },
+                            )
+                          : const SizedBox(),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          const Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text(
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            ),
+          ),
+        ],
       ),
     );
   }

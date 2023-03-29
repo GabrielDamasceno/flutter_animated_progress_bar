@@ -1,8 +1,10 @@
 import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/controller.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/enums.dart';
-import 'package:flutter_animated_progress_bar/src/rendering/render_progress_bar.dart';
+import 'package:flutter_animated_progress_bar/src/foundation/progress_bar_indicators.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_progress_bar/src/widgets/render_progress_bar_widget.dart';
+import 'package:flutter_animated_progress_bar/src/widgets/render_thumb_components_widget.dart';
 
 /// An animated progress bar widget designed to be used with audio or video.
 ///
@@ -54,7 +56,9 @@ import 'package:flutter/material.dart';
 ///   }
 /// }
 ///  ```
-class ProgressBar extends LeafRenderObjectWidget {
+///
+
+class ProgressBar extends StatefulWidget {
   /// Creates a [ProgressBar].
   ///
   /// * [controller] is responsible for performing the animations. It is required and must not be null.
@@ -73,6 +77,7 @@ class ProgressBar extends LeafRenderObjectWidget {
     required this.total,
     this.alignment = ProgressBarAlignment.center,
     this.barCapShape = BarCapShape.square,
+    this.progressBarIndicator = const RoundedRectangularProgressBarIndicator(),
     this.collapsedBarHeight = 5.0,
     this.collapsedThumbRadius = 8.0,
     this.expandedBarHeight = 7.0,
@@ -129,6 +134,8 @@ class ProgressBar extends LeafRenderObjectWidget {
   ///
   /// Defaults to `BarCapShape.square`.
   final BarCapShape barCapShape;
+
+  final ProgressBarIndicator progressBarIndicator;
 
   /// The smallest size of this bar.
   ///
@@ -238,66 +245,100 @@ class ProgressBar extends LeafRenderObjectWidget {
   final SemanticsFormatter? semanticsFormatter;
 
   @override
-  RenderObject createRenderObject(BuildContext context) {
-    return RenderProgressBar(
-      controller: controller,
-      progress: progress,
-      buffered: buffered,
-      total: total,
-      alignment: alignment,
-      barCapShape: barCapShape,
-      collapsedBarHeight: collapsedBarHeight,
-      collapsedThumbRadius: collapsedThumbRadius,
-      expandedBarHeight: expandedBarHeight,
-      expandedThumbRadius: expandedThumbRadius,
-      thumbGlowRadius: thumbGlowRadius,
-      thumbGlowColor: thumbGlowColor,
-      backgroundBarColor: backgroundBarColor,
-      collapsedProgressBarColor: collapsedProgressBarColor,
-      collapsedBufferedBarColor: collapsedBufferedBarColor,
-      collapsedThumbColor: collapsedThumbColor,
-      expandedProgressBarColor:
-          expandedProgressBarColor ?? collapsedProgressBarColor,
-      expandedBufferedBarColor:
-          expandedBufferedBarColor ?? collapsedBufferedBarColor,
-      expandedThumbColor: expandedThumbColor ?? collapsedThumbColor,
-      lerpColorsTransition: lerpColorsTransition,
-      showBufferedWhenCollapsed: showBufferedWhenCollapsed,
-      onSeek: onSeek,
-      onChanged: onChanged,
-      onChangeStart: onChangeStart,
-      onChangeEnd: onChangeEnd,
-      semanticsFormatter: semanticsFormatter,
-    );
+  State<ProgressBar> createState() => ProgressBarState();
+}
+
+class ProgressBarState extends State<ProgressBar> {
+  late final GlobalKey _renderProgressBarGlobalKey;
+  late final LayerLink _layerLink;
+
+  late final ValueNotifier<Duration> positionNotifier;
+  PaintThumbComponents? paintThumbComponents;
+  OverlayEntry? overlayEntry;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_showThumbComponents);
+    positionNotifier = ValueNotifier(widget.progress);
+    _renderProgressBarGlobalKey = GlobalKey();
+    _layerLink = LayerLink();
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, covariant RenderProgressBar renderObject) {
-    renderObject
-      ..controller = controller
-      ..progress = progress
-      ..buffered = buffered
-      ..total = total
-      ..alignment = alignment
-      ..barCapShape = barCapShape
-      ..collapsedBarHeight = collapsedBarHeight
-      ..collapsedThumbRadius = collapsedThumbRadius
-      ..expandedBarHeight = expandedBarHeight
-      ..expandedThumbRadius = expandedThumbRadius
-      ..thumbGlowRadius = thumbGlowRadius
-      ..thumbGlowColor = thumbGlowColor
-      ..backgroundBarColor = backgroundBarColor
-      ..collapsedProgressBarColor = collapsedProgressBarColor
-      ..collapsedBufferedBarColor = collapsedBufferedBarColor
-      ..collapsedThumbColor = collapsedThumbColor
-      ..expandedProgressBarColor =
-          expandedProgressBarColor ?? collapsedProgressBarColor
-      ..expandedBufferedBarColor =
-          expandedBufferedBarColor ?? collapsedBufferedBarColor
-      ..expandedThumbColor = expandedThumbColor ?? collapsedThumbColor
-      ..lerpColorsTransition = lerpColorsTransition
-      ..showBufferedWhenCollapsed = showBufferedWhenCollapsed
-      ..semanticsFormatter = semanticsFormatter;
+  void dispose() {
+    widget.controller.removeListener(_showThumbComponents);
+    positionNotifier.dispose();
+    overlayEntry?.remove();
+    overlayEntry?.dispose();
+    overlayEntry = null;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: RenderProgressBarWidget(
+        key: _renderProgressBarGlobalKey,
+        controller: widget.controller,
+        progress: widget.progress,
+        buffered: widget.buffered,
+        total: widget.total,
+        alignment: widget.alignment,
+        barCapShape: widget.barCapShape,
+        progressBarIndicator: widget.progressBarIndicator,
+        collapsedBarHeight: widget.collapsedBarHeight,
+        collapsedThumbRadius: widget.collapsedThumbRadius,
+        expandedBarHeight: widget.expandedBarHeight,
+        expandedThumbRadius: widget.expandedThumbRadius,
+        thumbGlowRadius: widget.thumbGlowRadius,
+        thumbGlowColor: widget.thumbGlowColor,
+        backgroundBarColor: widget.backgroundBarColor,
+        collapsedProgressBarColor: widget.collapsedProgressBarColor,
+        collapsedBufferedBarColor: widget.collapsedBufferedBarColor,
+        collapsedThumbColor: widget.collapsedThumbColor,
+        expandedProgressBarColor: widget.expandedProgressBarColor,
+        expandedBufferedBarColor: widget.expandedBufferedBarColor,
+        expandedThumbColor: widget.expandedThumbColor,
+        lerpColorsTransition: widget.lerpColorsTransition,
+        showBufferedWhenCollapsed: widget.showBufferedWhenCollapsed,
+        progressBarState: this,
+        onSeek: widget.onSeek,
+        onChanged: (position) {
+          _thumbComponentsHandler(position);
+          widget.onChanged?.call(position);
+        },
+        onChangeStart: (position) {
+          _thumbComponentsHandler(position);
+          widget.onChangeStart?.call(position);
+        },
+        onChangeEnd: widget.onChangeEnd,
+        semanticsFormatter: widget.semanticsFormatter,
+      ),
+    );
+  }
+
+  void _thumbComponentsHandler(Duration newPosition) {
+    positionNotifier.value = newPosition;
+    _showThumbComponents();
+  }
+
+  void _showThumbComponents() {
+    if (overlayEntry == null) {
+      overlayEntry = OverlayEntry(
+        builder: (BuildContext context) {
+          return CompositedTransformFollower(
+            link: _layerLink,
+            showWhenUnlinked: false,
+            child: RenderThumbComponentsWidget(
+              controller: widget.controller,
+              progressBarState: this,
+            ),
+          );
+        },
+      );
+      Overlay.of(context, debugRequiredFor: widget).insert(overlayEntry!);
+    }
   }
 }

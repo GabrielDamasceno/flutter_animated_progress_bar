@@ -20,13 +20,12 @@ class _SimpleExampleState extends State<SimpleExample>
     with TickerProviderStateMixin {
   late final ProgressBarController _controller;
 
+
   @override
   void initState() {
     super.initState();
-
     _controller = ProgressBarController(
       vsync: this,
-      barAnimationDuration: const Duration(milliseconds: 300),
       thumbAnimationDuration: const Duration(milliseconds: 200),
     );
   }
