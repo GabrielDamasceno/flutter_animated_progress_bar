@@ -84,7 +84,7 @@ class RoundedRectangularProgressBarIndicator extends ProgressBarIndicator {
       ..text = TextSpan(
         text: durationFormatter?.call(thumbProgress) ??
             Formatters.formatDuration(thumbProgress),
-        style: style,
+        style: style ?? const TextStyle(height: 1.0),
       )
       ..textDirection = TextDirection.ltr
       ..layout();
@@ -181,7 +181,7 @@ class CircularProgressBarIndicator extends ProgressBarIndicator {
       ..text = TextSpan(
         text: durationFormatter?.call(thumbProgress) ??
             Formatters.formatDuration(thumbProgress),
-        style: style ?? const TextStyle(fontSize: 10.0),
+        style: style ?? const TextStyle(fontSize: 12.0, height: 1.0),
       )
       ..textDirection = TextDirection.ltr
       ..layout();
@@ -190,7 +190,7 @@ class CircularProgressBarIndicator extends ProgressBarIndicator {
     final double maxHeight = max(thumbRadius * 2, barHeight);
     final double dyAnchor = position.dy - (maxHeight / 2) - insets;
     final double neckHeight = radius;
-    final double neckWidth = radius / 2;
+    final double neckWidth = radius * 0.8;
 
     final Canvas canvas = context.canvas;
     final Paint paint = Paint()..color = backgroundColor;

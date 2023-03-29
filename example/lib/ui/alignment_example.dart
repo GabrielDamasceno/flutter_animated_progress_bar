@@ -103,6 +103,10 @@ class _Demo extends StatelessWidget {
                 child: ProgressBar(
                   controller: controller,
                   alignment: alignment,
+                  expandedBarHeight: 12.0,
+                  collapsedThumbRadius: 10.0,
+                  expandedThumbRadius: 14.0,
+                  thumbGlowRadius: 30.0,
                   progress: const Duration(seconds: 30),
                   buffered: const Duration(seconds: 45),
                   total: const Duration(minutes: 1),
