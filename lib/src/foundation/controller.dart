@@ -83,7 +83,7 @@ class ProgressBarController extends ChangeNotifier {
   /// if there are no more gesture interactions. Used by [forward] method.
   ProgressBarController({
     required TickerProvider vsync,
-    this.barAnimationDuration = const Duration(milliseconds: 200),
+    this.barAnimationDuration = const Duration(milliseconds: 300),
     this.thumbAnimationDuration = const Duration(milliseconds: 100),
     this.waitingDuration = const Duration(seconds: 2),
   }) {
@@ -201,7 +201,8 @@ class ProgressBarController extends ChangeNotifier {
   }
 
   /// Starts running this bar animation. It will expand, wait and then collapse bar.
-  ///
+  /// Also, collapses the thumb.
+  /// 
   /// Returns a [TickerFuture] that completes when the animation is complete.
   ///
   /// The most recently returned [TickerFuture], if any, is marked as having been
@@ -209,6 +210,7 @@ class ProgressBarController extends ChangeNotifier {
   /// derivative future completes with a [TickerCanceled] error.
   TickerFuture forward() {
     stopBarAnimation();
+    collapseThumb();
 
     _barSimulation = CombinedSimulation(
       simulations: [
