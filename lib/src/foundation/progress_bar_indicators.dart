@@ -6,7 +6,11 @@ import 'package:flutter_animated_progress_bar/flutter_animated_progress_bar.dart
 import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:flutter_animated_progress_bar/src/utils/formatters.dart';
 
+/// Base class for progress bar indicators.
+/// Create a subclass of this if you would like a custom indicator.
 abstract class ProgressBarIndicator {
+  /// This abstract const constructor enables subclasses to provide
+  /// const constructors so that they can be used in const expressions.
   const ProgressBarIndicator();
 
   void paint(
@@ -21,6 +25,7 @@ abstract class ProgressBarIndicator {
     required TextPainter textPainter,
   });
 
+  /// Instance of [ProgressBarIndicator] to disable indicator drawing.
   static const ProgressBarIndicator none = _NoProgressIndicator();
 }
 
@@ -43,7 +48,9 @@ class _NoProgressIndicator extends ProgressBarIndicator {
   }
 }
 
+/// The default progress bar indicator of a [ProgressBar].
 class RoundedRectangularProgressBarIndicator extends ProgressBarIndicator {
+  /// Create a indicator that resembles a rounded rectangular tooltip.
   const RoundedRectangularProgressBarIndicator({
     this.padding = const EdgeInsets.all(8.0),
     this.curve = Curves.fastOutSlowIn,
@@ -144,7 +151,9 @@ class RoundedRectangularProgressBarIndicator extends ProgressBarIndicator {
   }
 }
 
+/// A indicator that resembles a circular tooltip.
 class CircularProgressBarIndicator extends ProgressBarIndicator {
+  /// Create a indicator that resembles a circular tooltip.
   const CircularProgressBarIndicator({
     this.padding = const EdgeInsets.symmetric(horizontal: 5.0),
     this.curve = Curves.fastOutSlowIn,

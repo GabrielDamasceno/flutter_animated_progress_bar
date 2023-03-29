@@ -3,16 +3,23 @@
 <p align='center'> An animated progress bar widget designed to be used with video or audio. </p>
 
 <p align='center'>
-    <img src="https://raw.githubusercontent.com/GabrielDamasceno/flutter_animated_progress_bar/master/doc/simple_demo.gif"/>
+    <img src="https://raw.githubusercontent.com/GabrielDamasceno/flutter_animated_progress_bar/master/doc/simple_demo.gif" width="40%" height="40%"/>
 </p>
+
+## Features
+:white_check_mark: Full control of the animations.
+:white_check_mark: Highly customizable.
+:white_check_mark: Nothing is clipped on the edges to give a modern aspect (See audio example below).
+:white_check_mark: Thumb related components are painted above all widgets to achieve fancy effects (See video example below).
 
 <p align='center'> Demo with video and audio: </p>
 
 <p align='center'>
-    <img src="https://raw.githubusercontent.com/GabrielDamasceno/flutter_animated_progress_bar/master/doc/video_demo.gif"/>
-    <img src="https://raw.githubusercontent.com/GabrielDamasceno/flutter_animated_progress_bar/master/doc/audio_demo.gif"/>
+    <img src="https://raw.githubusercontent.com/GabrielDamasceno/flutter_animated_progress_bar/master/doc/video_demo.gif" width="40%" height="40%"/>
+    <img src="https://raw.githubusercontent.com/GabrielDamasceno/flutter_animated_progress_bar/master/doc/audio_demo.gif" width="40%" height="40%"/>
 </p>
 
+*Keep in mind this widget does not play any media by itself!*
 ## Quick Example
 
 ```dart
@@ -123,6 +130,7 @@ You can customize the ProgressBar with the following parameters:
 | --- | --- | --- |
 | `alignment` | `ProgressBarAlignment` | The alignment of ProgressBar relative to it's total size. |
 | `barCapShape` | `BarCapShape` | The shape of the bars at the left and right edges. |
+| `progressBarIndicator` | `ProgressBarIndicator` | The indicator to be painted. |
 | `collapsedBarHeight` | `double` | The smallest size of this bar. |
 | `collapsedThumbRadius` | `double` | The smallest size of this thumb. |
 | `expandedBarHeight` | `double` | The greatest size of this bar. |
@@ -142,7 +150,7 @@ You can customize the ProgressBar with the following parameters:
 To quickly try it out all these features, check the [Playground](https://github.com/GabrielDamasceno/flutter_animated_progress_bar/blob/master/example/lib/ui/playground.dart):
 
 <p align='center'>
-    <img src="https://raw.githubusercontent.com/GabrielDamasceno/flutter_animated_progress_bar/master/doc/playground.jpg" width="30%" height="30%"/>
+    <img src="https://raw.githubusercontent.com/GabrielDamasceno/flutter_animated_progress_bar/master/doc/playground.png" width="30%" height="30%"/>
 </p>
 
 ### Notes
