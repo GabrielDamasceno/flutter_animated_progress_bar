@@ -8,8 +8,11 @@
 
 ## Features
 :white_check_mark: Full control of the animations.
+
 :white_check_mark: Highly customizable.
+
 :white_check_mark: Nothing is clipped on the edges to give a modern aspect (See audio example below).
+
 :white_check_mark: Thumb related components are painted above all widgets to achieve fancy effects (See video example below).
 
 <p align='center'> Demo with video and audio: </p>
