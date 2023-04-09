@@ -1,5 +1,6 @@
 import 'dart:ui' show clampDouble;
-import 'package:flutter/physics.dart' show Simulation, Tolerance;
+import 'package:flutter/animation.dart';
+import 'package:flutter/physics.dart';
 
 /// A base class that describe a simulation that have a finite duration.
 /// We expose [totalDuration] in order to handle a well-known limit.
@@ -17,10 +18,14 @@ class InterpolationSimulation extends FiniteSimulation {
   /// The final value of [x].
   final double end;
 
+  /// The curve to transform [t].
+  final Curve curve;
+
   /// Creates an [InterpolationSimulation] that linearly interpolates from [begin] to [end] given a time.
   InterpolationSimulation({
     required this.begin,
     required this.end,
+    required this.curve,
     required Duration totalDuration,
   }) : _totalDurationInMicroseconds = totalDuration.inMicroseconds;
 
@@ -30,7 +35,7 @@ class InterpolationSimulation extends FiniteSimulation {
   double x(double time) {
     final double t = clampDouble(time / _totalDurationInMicroseconds, 0.0, 1.0);
 
-    return begin + (end - begin) * t;
+    return begin + (end - begin) * curve.transform(t);
   }
 
   @override

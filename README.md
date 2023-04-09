@@ -1,7 +1,13 @@
-# Flutter Animated Progress Bar
+<h1 align="center"> Animated Progress Bar </h1>
 
-[![](https://img.shields.io/pub/v/flutter_animated_progress_bar)](https://pub.dev/packages/flutter_animated_progress_bar)
-[![](https://img.shields.io/github/license/gabrieldamasceno/flutter_animated_progress_bar)](https://pub.dev/packages/flutter_animated_progress_bar/license)
+<div align="center">
+
+  <a href="https://pub.dev/packages/flutter_animated_progress_bar">![](https://img.shields.io/pub/v/flutter_animated_progress_bar)</a>
+  <a href="https://pub.dev/packages/flutter_animated_progress_bar/license">![](https://img.shields.io/github/license/gabrieldamasceno/flutter_animated_progress_bar)</a>
+
+</div>
+
+<br>
 
 <p align='center'> An animated progress bar widget designed to be used with video or audio. </p>
 
@@ -124,6 +130,11 @@ _controller.stopBarAnimation();             // Stop bar animation, if running.
 _controller.expandThumb();                  // Expand the thumb.
 _controller.collapseThumb();                // Collapse the thumb.
 _controller.stopThumbAnimation();           // Stop thumb animation, if running.
+
+_controller.expandBar(                      // Expand bar with custom
+  duration: const Duration(seconds:1),      // duration and curve.
+  curve: Curves.easeIn,
+);
 ```
 
 The methods that start animations return a [TickerFuture](https://api.flutter.dev/flutter/scheduler/TickerFuture-class.html) object which completes when the animation completes successfully. Which means that you can `await` for them to finish.

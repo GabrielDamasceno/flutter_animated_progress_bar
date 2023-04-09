@@ -1,6 +1,6 @@
+import 'package:flutter/animation.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/simulations.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter/scheduler.dart';
 
 /// A controller for [ProgressBar] animation.
@@ -89,8 +89,8 @@ class ProgressBarController extends ChangeNotifier {
   }) {
     _thumbTicker = vsync.createTicker(_onThumbTick);
     _barTicker = vsync.createTicker(_onBarTick);
-    _barValue = 0.0;
-    _thumbValue = 0.0;
+    _barValue = _lowerBound;
+    _thumbValue = _lowerBound;
   }
 
   /// The length of time this bar animation should last.
@@ -126,7 +126,7 @@ class ProgressBarController extends ChangeNotifier {
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
   set barValue(double value) {
-    final double newValue = clampDouble(value, 0.0, 1.0);
+    final double newValue = clampDouble(value, _lowerBound, _upperBound);
     if (_barValue == newValue) return;
 
     stopBarAnimation();
@@ -150,13 +150,16 @@ class ProgressBarController extends ChangeNotifier {
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
   set thumbValue(double value) {
-    final double newValue = clampDouble(value, 0.0, 1.0);
+    final double newValue = clampDouble(value, _lowerBound, _upperBound);
     if (_thumbValue == newValue) return;
 
     stopThumbAnimation();
     _thumbValue = newValue;
     notifyListeners();
   }
+
+  static const double _lowerBound = 0.0;
+  static const double _upperBound = 1.0;
 
   late final Ticker _thumbTicker;
   late final Ticker _barTicker;
@@ -173,7 +176,12 @@ class ProgressBarController extends ChangeNotifier {
     if (simulation == null) return;
 
     final double elapsedInMicroseconds = elapsed.inMicroseconds.toDouble();
-    onValueUpdate.call(simulation.x(elapsedInMicroseconds));
+    final double newValue = clampDouble(
+      simulation.x(elapsedInMicroseconds),
+      _lowerBound,
+      _upperBound,
+    );
+    onValueUpdate.call(newValue);
 
     if (simulation.isDone(elapsedInMicroseconds)) {
       onDone.call();
@@ -203,12 +211,21 @@ class ProgressBarController extends ChangeNotifier {
   /// Starts running this bar animation. It will expand, wait and then collapse bar.
   /// Also, collapses the thumb.
   ///
+  /// You can set the `expandDuration`, `waitingDuration` and `collapseDuration` properties
+  /// to custom durations, otherwise it will fallback to `barAnimationDuration`,
+  /// `this.waitingDuration` and `barAnimationDuration` respectively.
+  ///
   /// Returns a [TickerFuture] that completes when the animation is complete.
   ///
   /// The most recently returned [TickerFuture], if any, is marked as having been
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
-  TickerFuture forward() {
+  TickerFuture forward({
+    Duration? expandDuration,
+    Duration? waitingDuration,
+    Duration? collapseDuration,
+    Curve curve = Curves.linear,
+  }) {
     stopBarAnimation();
     collapseThumb();
 
@@ -216,23 +233,26 @@ class ProgressBarController extends ChangeNotifier {
       simulations: [
         InterpolationSimulation(
           begin: _barValue,
-          end: 1.0,
+          end: _upperBound,
+          curve: curve,
           totalDuration: _computeSimulationDuration(
-            0.0,
-            1.0,
+            _lowerBound,
+            _upperBound,
             _barValue,
-            barAnimationDuration,
+            expandDuration ?? barAnimationDuration,
           ),
         ),
         InterpolationSimulation(
-          begin: 1.0,
-          end: 1.0,
-          totalDuration: waitingDuration,
+          begin: _upperBound,
+          end: _upperBound,
+          curve: curve,
+          totalDuration: waitingDuration ?? this.waitingDuration,
         ),
         InterpolationSimulation(
-          begin: 1.0,
-          end: 0.0,
-          totalDuration: barAnimationDuration,
+          begin: _upperBound,
+          end: _lowerBound,
+          curve: curve,
+          totalDuration: collapseDuration ?? barAnimationDuration,
         ),
       ],
     );
@@ -242,14 +262,20 @@ class ProgressBarController extends ChangeNotifier {
 
   /// Starts running this bar animation towards `1.0`, expanding the bar.
   ///
+  /// You can set the `duration` property to a custom duration, otherwise
+  /// it will fallback to `barAnimationDuration`.
+  ///
   /// Returns a [TickerFuture] that completes when the animation is complete.
   ///
   /// The most recently returned [TickerFuture], if any, is marked as having been
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
-  TickerFuture expandBar() {
-    const double begin = 0.0;
-    const double end = 1.0;
+  TickerFuture expandBar({
+    Duration? duration,
+    Curve curve = Curves.linear,
+  }) {
+    const double begin = _lowerBound;
+    const double end = _upperBound;
 
     stopBarAnimation();
     if (_barValue == end) return TickerFuture.complete();
@@ -257,11 +283,12 @@ class ProgressBarController extends ChangeNotifier {
     _barSimulation = InterpolationSimulation(
       begin: _barValue,
       end: end,
+      curve: curve,
       totalDuration: _computeSimulationDuration(
         begin,
         end,
         _barValue,
-        barAnimationDuration,
+        duration ?? barAnimationDuration,
       ),
     );
 
@@ -270,14 +297,20 @@ class ProgressBarController extends ChangeNotifier {
 
   /// Starts running this bar animation towards `0.0`, collapsing the bar.
   ///
+  /// You can set the `duration` property to a custom duration, otherwise
+  /// it will fallback to `barAnimationDuration`.
+  ///
   /// Returns a [TickerFuture] that completes when the animation is complete.
   ///
   /// The most recently returned [TickerFuture], if any, is marked as having been
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
-  TickerFuture collapseBar() {
-    const double begin = 1.0;
-    const double end = 0.0;
+  TickerFuture collapseBar({
+    Duration? duration,
+    Curve curve = Curves.linear,
+  }) {
+    const double begin = _upperBound;
+    const double end = _lowerBound;
 
     stopBarAnimation();
     if (_barValue == end) return TickerFuture.complete();
@@ -285,11 +318,12 @@ class ProgressBarController extends ChangeNotifier {
     _barSimulation = InterpolationSimulation(
       begin: _barValue,
       end: end,
+      curve: curve,
       totalDuration: _computeSimulationDuration(
         begin,
         end,
         _barValue,
-        barAnimationDuration,
+        duration ?? barAnimationDuration,
       ),
     );
 
@@ -298,14 +332,20 @@ class ProgressBarController extends ChangeNotifier {
 
   /// Starts running this thumb animation towards `1.0`, expanding the thumb.
   ///
+  /// You can set the `duration` property to a custom duration, otherwise
+  /// it will fallback to `thumbAnimationDuration`.
+  ///
   /// Returns a [TickerFuture] that completes when the animation is complete.
   ///
   /// The most recently returned [TickerFuture], if any, is marked as having been
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
-  TickerFuture expandThumb() {
-    const double begin = 0.0;
-    const double end = 1.0;
+  TickerFuture expandThumb({
+    Duration? duration,
+    Curve curve = Curves.linear,
+  }) {
+    const double begin = _lowerBound;
+    const double end = _upperBound;
 
     stopThumbAnimation();
     if (_thumbValue == end) return TickerFuture.complete();
@@ -313,11 +353,12 @@ class ProgressBarController extends ChangeNotifier {
     _thumbSimulation = InterpolationSimulation(
       begin: _thumbValue,
       end: end,
+      curve: curve,
       totalDuration: _computeSimulationDuration(
         begin,
         end,
         _thumbValue,
-        thumbAnimationDuration,
+        duration ?? thumbAnimationDuration,
       ),
     );
 
@@ -326,14 +367,20 @@ class ProgressBarController extends ChangeNotifier {
 
   /// Starts running this thumb animation towards `0.0`, collapsing the thumb.
   ///
+  /// You can set the `duration` property to a custom duration, otherwise
+  /// it will fallback to `thumbAnimationDuration`.
+  ///
   /// Returns a [TickerFuture] that completes when the animation is complete.
   ///
   /// The most recently returned [TickerFuture], if any, is marked as having been
   /// canceled, meaning the future never completes and its [TickerFuture.orCancel]
   /// derivative future completes with a [TickerCanceled] error.
-  TickerFuture collapseThumb() {
-    const double begin = 1.0;
-    const double end = 0.0;
+  TickerFuture collapseThumb({
+    Duration? duration,
+    Curve curve = Curves.linear,
+  }) {
+    const double begin = _upperBound;
+    const double end = _lowerBound;
 
     stopThumbAnimation();
     if (_thumbValue == end) return TickerFuture.complete();
@@ -341,11 +388,12 @@ class ProgressBarController extends ChangeNotifier {
     _thumbSimulation = InterpolationSimulation(
       begin: _thumbValue,
       end: end,
+      curve: curve,
       totalDuration: _computeSimulationDuration(
         begin,
         end,
         _thumbValue,
-        thumbAnimationDuration,
+        duration ?? thumbAnimationDuration,
       ),
     );
 

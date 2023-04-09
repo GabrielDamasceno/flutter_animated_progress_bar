@@ -1,6 +1,9 @@
 ## 1.0.5 - (2023-??-??)
 
+* Add `automaticallyHandleAnimations` option to toggle the default animation behavior.
+* Add `duration` and `curve` options in controller methods that start animations.
 * Update docs.
+* Update examples.
 
 ## 1.0.4 - (2023-03-29)
 
