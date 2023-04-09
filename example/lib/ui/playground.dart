@@ -31,6 +31,7 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
 
   late ProgressBarAlignment _alignment;
   late BarCapShape _barCapShape;
+  late ProgressBarIndicator _progressBarIndicator;
 
   late final Color _backgroundBarColor;
   late final Color _collapsedProgressBarColor;
@@ -57,6 +58,7 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
 
     _alignment = ProgressBarAlignment.center;
     _barCapShape = BarCapShape.square;
+    _progressBarIndicator = const RoundedRectangularProgressBarIndicator();
 
     _backgroundBarColor = Colors.grey;
     _collapsedProgressBarColor = Colors.red;
@@ -174,6 +176,7 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
                 expandedBarHeight: 10.0,
                 alignment: _alignment,
                 barCapShape: _barCapShape,
+                progressBarIndicator: _progressBarIndicator,
                 lerpColorsTransition: _lerpColors,
                 showBufferedWhenCollapsed: _showBufferedWhenCollapsed,
                 backgroundBarColor: _backgroundBarColor,
@@ -223,6 +226,38 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
                     .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
                     .toList(),
                 onChanged: (value) => setState(() => _barCapShape = value!),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Indicator:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 10.0),
+              DropdownButton(
+                value: _progressBarIndicator,
+                items: const [
+                  DropdownMenuItem(
+                    value: ProgressBarIndicator.none,
+                    child: Text('none'),
+                  ),
+                  DropdownMenuItem(
+                    value: RoundedRectangularProgressBarIndicator(),
+                    child: Text('rectangular'),
+                  ),
+                  DropdownMenuItem(
+                    value: CircularProgressBarIndicator(),
+                    child: Text('circular'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() => _progressBarIndicator = value!);
+                },
               ),
             ],
           ),
