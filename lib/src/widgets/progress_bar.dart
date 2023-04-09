@@ -135,6 +135,11 @@ class ProgressBar extends StatefulWidget {
   /// Defaults to `BarCapShape.square`.
   final BarCapShape barCapShape;
 
+  /// The indicator that appears above the thumb.
+  ///
+  /// To disable the indicator, set this value to `ProgressBarIndicator.none`.
+  ///
+  /// Defaults to `RoundedRectangularProgressBarIndicator`.
   final ProgressBarIndicator progressBarIndicator;
 
   /// The smallest size of this bar.

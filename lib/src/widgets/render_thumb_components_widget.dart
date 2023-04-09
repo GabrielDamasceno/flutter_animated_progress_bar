@@ -17,7 +17,7 @@ class RenderThumbComponentsWidget extends LeafRenderObjectWidget {
   RenderObject createRenderObject(BuildContext context) {
     return RenderThumbComponents(
       controller: controller,
-     progressBarState: progressBarState,
+      progressBarState: progressBarState,
     );
   }
 

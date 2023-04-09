@@ -20,7 +20,6 @@ class _SimpleExampleState extends State<SimpleExample>
     with TickerProviderStateMixin {
   late final ProgressBarController _controller;
 
-
   @override
   void initState() {
     super.initState();

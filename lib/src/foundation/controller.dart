@@ -202,7 +202,7 @@ class ProgressBarController extends ChangeNotifier {
 
   /// Starts running this bar animation. It will expand, wait and then collapse bar.
   /// Also, collapses the thumb.
-  /// 
+  ///
   /// Returns a [TickerFuture] that completes when the animation is complete.
   ///
   /// The most recently returned [TickerFuture], if any, is marked as having been
