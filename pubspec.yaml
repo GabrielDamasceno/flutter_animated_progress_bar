@@ -2,6 +2,7 @@ name: flutter_animated_progress_bar
 description: An animated progress bar widget designed to be used with audio or video.
 version: 1.0.5
 homepage: https://github.com/GabrielDamasceno/flutter_animated_progress_bar
+repository: https://github.com/GabrielDamasceno/flutter_animated_progress_bar
 issue_tracker: https://github.com/GabrielDamasceno/flutter_animated_progress_bar/issues
 
 environment:

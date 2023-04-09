@@ -130,6 +130,11 @@ _controller.stopBarAnimation();             // Stop bar animation, if running.
 _controller.expandThumb();                  // Expand the thumb.
 _controller.collapseThumb();                // Collapse the thumb.
 _controller.stopThumbAnimation();           // Stop thumb animation, if running.
+
+_controller.expandBar(                      // Expand bar with custom
+  duration: const Duration(seconds:1),      // duration and curve.
+  curve: Curves.easeIn,
+);
 ```
 
 The methods that start animations return a [TickerFuture](https://api.flutter.dev/flutter/scheduler/TickerFuture-class.html) object which completes when the animation completes successfully. Which means that you can `await` for them to finish.
