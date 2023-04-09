@@ -34,6 +34,7 @@ class RenderProgressBar extends RenderBox {
     required Color collapsedThumbColor,
     required bool lerpColorsTransition,
     required bool showBufferedWhenCollapsed,
+    required bool automaticallyHandleAnimations,
     required this.progressBarState,
     required this.onSeek,
     this.onChanged,
@@ -62,6 +63,7 @@ class RenderProgressBar extends RenderBox {
         _collapsedThumbColor = collapsedThumbColor,
         _lerpColorsTransition = lerpColorsTransition,
         _showBufferedWhenCollapsed = showBufferedWhenCollapsed,
+        _automaticallyHandleAnimations = automaticallyHandleAnimations,
         _semanticsFormatter = semanticsFormatter {
     _progressTextPainter = TextPainter();
     _horizontalDragGestureRecognizer = HorizontalDragGestureRecognizer()
@@ -296,6 +298,15 @@ class RenderProgressBar extends RenderBox {
     markNeedsPaint();
   }
 
+  late bool _automaticallyHandleAnimations;
+  bool get automaticallyHandleAnimations => _automaticallyHandleAnimations;
+  set automaticallyHandleAnimations(bool newValue) {
+    if (_automaticallyHandleAnimations == newValue) return;
+
+    _automaticallyHandleAnimations = newValue;
+    markNeedsLayout();
+  }
+
   late SemanticsFormatter? _semanticsFormatter;
   SemanticsFormatter? get semanticsFormatter => _semanticsFormatter;
   set semanticsFormatter(SemanticsFormatter? newValue) {
@@ -321,8 +332,10 @@ class RenderProgressBar extends RenderBox {
     _isDragging = true;
     _position = _clampPositionBySize(details.localPosition);
 
-    _controller.expandBar();
-    _controller.expandThumb();
+    if (automaticallyHandleAnimations) {
+      _controller.expandBar();
+      _controller.expandThumb();
+    }
 
     onChangeStart?.call(_positionToDuration(_position.dx));
 
@@ -341,8 +354,9 @@ class RenderProgressBar extends RenderBox {
     _isDragging = false;
     _progress = _positionToDuration(_position.dx);
 
-    _controller.forward();
-    _controller.collapseThumb();
+    if (automaticallyHandleAnimations) {
+      _controller.forward();
+    }
 
     onChangeEnd?.call(_progress);
     onSeek.call(_progress);
@@ -354,7 +368,9 @@ class RenderProgressBar extends RenderBox {
     final double localPosition = _clampLocalPosition(details.localPosition.dx);
     _progress = _positionToDuration(localPosition);
 
-    _controller.forward();
+    if (automaticallyHandleAnimations) {
+      _controller.forward();
+    }
 
     onChanged?.call(_progress);
     onSeek.call(_progress);

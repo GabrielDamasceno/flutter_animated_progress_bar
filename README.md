@@ -1,7 +1,13 @@
-# Flutter Animated Progress Bar
+<h1 align="center"> Animated Progress Bar </h1>
 
-[![](https://img.shields.io/pub/v/flutter_animated_progress_bar)](https://pub.dev/packages/flutter_animated_progress_bar)
-[![](https://img.shields.io/github/license/gabrieldamasceno/flutter_animated_progress_bar)](https://pub.dev/packages/flutter_animated_progress_bar/license)
+<div align="center">
+
+  <a href="https://pub.dev/packages/flutter_animated_progress_bar">![](https://img.shields.io/pub/v/flutter_animated_progress_bar)</a>
+  <a href="https://pub.dev/packages/flutter_animated_progress_bar/license">![](https://img.shields.io/github/license/gabrieldamasceno/flutter_animated_progress_bar)</a>
+
+</div>
+
+<br>
 
 <p align='center'> An animated progress bar widget designed to be used with video or audio. </p>
 

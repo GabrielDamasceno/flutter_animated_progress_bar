@@ -93,6 +93,7 @@ class ProgressBar extends StatefulWidget {
     this.expandedThumbColor,
     this.lerpColorsTransition = true,
     this.showBufferedWhenCollapsed = true,
+    this.automaticallyHandleAnimations = true,
     required this.onSeek,
     this.onChanged,
     this.onChangeStart,
@@ -219,6 +220,15 @@ class ProgressBar extends StatefulWidget {
   /// Defaults to `true`.
   final bool showBufferedWhenCollapsed;
 
+  /// Whether animations should be handled automatically.
+  /// By default, it will be handled by gesture interactions using
+  /// `Curves.linear` for all animations.
+  ///
+  /// You can disable this behavior and use the callbacks for full control of animations.
+  ///
+  /// Defaults to `true`.
+  final bool automaticallyHandleAnimations;
+
   /// A callback that is called when the user taps or stops dragging.
   ///
   /// This value can be safely used to seek the media content.
@@ -308,6 +318,7 @@ class ProgressBarState extends State<ProgressBar> {
         expandedThumbColor: widget.expandedThumbColor,
         lerpColorsTransition: widget.lerpColorsTransition,
         showBufferedWhenCollapsed: widget.showBufferedWhenCollapsed,
+        automaticallyHandleAnimations: widget.automaticallyHandleAnimations,
         progressBarState: this,
         onSeek: widget.onSeek,
         onChanged: (position) {

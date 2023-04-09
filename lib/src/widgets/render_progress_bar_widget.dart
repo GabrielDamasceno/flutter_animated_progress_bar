@@ -29,6 +29,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
     this.expandedThumbColor,
     required this.lerpColorsTransition,
     required this.showBufferedWhenCollapsed,
+    required this.automaticallyHandleAnimations,
     required this.progressBarState,
     required this.onSeek,
     this.onChanged,
@@ -59,6 +60,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
   final Color? expandedThumbColor;
   final bool lerpColorsTransition;
   final bool showBufferedWhenCollapsed;
+  final bool automaticallyHandleAnimations;
   final ProgressBarState progressBarState;
   final ValueChanged<Duration> onSeek;
   final ValueChanged<Duration>? onChanged;
@@ -93,6 +95,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
       expandedThumbColor: expandedThumbColor ?? collapsedThumbColor,
       lerpColorsTransition: lerpColorsTransition,
       showBufferedWhenCollapsed: showBufferedWhenCollapsed,
+      automaticallyHandleAnimations: automaticallyHandleAnimations,
       progressBarState: progressBarState,
       onSeek: onSeek,
       onChanged: onChanged,
@@ -132,6 +135,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
       ..expandedThumbColor = expandedThumbColor ?? collapsedThumbColor
       ..lerpColorsTransition = lerpColorsTransition
       ..showBufferedWhenCollapsed = showBufferedWhenCollapsed
+      ..automaticallyHandleAnimations = automaticallyHandleAnimations
       ..semanticsFormatter = semanticsFormatter;
   }
 }
