@@ -18,6 +18,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
     required this.collapsedThumbRadius,
     required this.expandedBarHeight,
     required this.expandedThumbRadius,
+    required this.thumbElevation,
     required this.thumbGlowRadius,
     required this.thumbGlowColor,
     required this.backgroundBarColor,
@@ -50,6 +51,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
   final double expandedBarHeight;
   final double expandedThumbRadius;
   final double thumbGlowRadius;
+  final double thumbElevation;
   final Color thumbGlowColor;
   final Color backgroundBarColor;
   final Color collapsedProgressBarColor;
@@ -83,6 +85,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
       expandedBarHeight: expandedBarHeight,
       expandedThumbRadius: expandedThumbRadius,
       thumbGlowRadius: thumbGlowRadius,
+      thumbElevation: thumbElevation,
       thumbGlowColor: thumbGlowColor,
       backgroundBarColor: backgroundBarColor,
       collapsedProgressBarColor: collapsedProgressBarColor,
@@ -123,6 +126,7 @@ class RenderProgressBarWidget extends LeafRenderObjectWidget {
       ..expandedBarHeight = expandedBarHeight
       ..expandedThumbRadius = expandedThumbRadius
       ..thumbGlowRadius = thumbGlowRadius
+      ..thumbElevation = thumbElevation
       ..thumbGlowColor = thumbGlowColor
       ..backgroundBarColor = backgroundBarColor
       ..collapsedProgressBarColor = collapsedProgressBarColor

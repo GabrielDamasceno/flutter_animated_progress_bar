@@ -83,6 +83,7 @@ class ProgressBar extends StatefulWidget {
     this.expandedBarHeight = 7.0,
     this.expandedThumbRadius = 10.0,
     this.thumbGlowRadius = 25.0,
+    this.thumbElevation = 1.0,
     this.thumbGlowColor = const Color(0x50FFFFFF),
     this.backgroundBarColor = Colors.grey,
     this.collapsedProgressBarColor = Colors.red,
@@ -178,6 +179,11 @@ class ProgressBar extends StatefulWidget {
   ///
   /// Defaults to `25.0`.
   final double thumbGlowRadius;
+
+  /// The size of the shadow drawn around the thumb.
+  ///
+  /// Defaults to `1.0`.
+  final double thumbElevation;
 
   /// The color of the overlay drawn around the thumb. This is typically a semi-transparent color.
   final Color thumbGlowColor;
@@ -308,6 +314,7 @@ class ProgressBarState extends State<ProgressBar> {
         expandedBarHeight: widget.expandedBarHeight,
         expandedThumbRadius: widget.expandedThumbRadius,
         thumbGlowRadius: widget.thumbGlowRadius,
+        thumbElevation: widget.thumbElevation,
         thumbGlowColor: widget.thumbGlowColor,
         backgroundBarColor: widget.backgroundBarColor,
         collapsedProgressBarColor: widget.collapsedProgressBarColor,

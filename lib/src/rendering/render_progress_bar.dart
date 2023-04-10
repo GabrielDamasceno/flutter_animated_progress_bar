@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/controller.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/enums.dart';
@@ -23,6 +22,7 @@ class RenderProgressBar extends RenderBox {
     required double collapsedThumbRadius,
     required double expandedBarHeight,
     required double expandedThumbRadius,
+    required double thumbElevation,
     required double thumbGlowRadius,
     required Color thumbGlowColor,
     required Color backgroundBarColor,
@@ -56,6 +56,7 @@ class RenderProgressBar extends RenderBox {
         _expandedProgressBarColor = expandedProgressBarColor,
         _expandedBufferedBarColor = expandedBufferedBarColor,
         _expandedThumbColor = expandedThumbColor,
+        _thumbElevation = thumbElevation,
         _thumbGlowRadius = thumbGlowRadius,
         _thumbGlowColor = thumbGlowColor,
         _collapsedProgressBarColor = collapsedProgressBarColor,
@@ -197,6 +198,15 @@ class RenderProgressBar extends RenderBox {
 
     _expandedThumbRadius = newValue;
     markNeedsLayout();
+  }
+
+  late double _thumbElevation;
+  double get thumbElevation => _thumbElevation;
+  set thumbElevation(double newValue) {
+    if (_thumbElevation == newValue) return;
+
+    _thumbElevation = newValue;
+    markNeedsPaint();
   }
 
   late double _thumbGlowRadius;
@@ -564,6 +574,14 @@ class RenderProgressBar extends RenderBox {
     );
     final Offset center = Offset(dx, _position.dy) + offset;
 
+    final Path path = Path()
+      ..addOval(
+        Rect.fromCircle(
+          center: center,
+          radius: _effectiveThumbRadius,
+        ),
+      );
+
     if (_thumbGlowRadius > 0.0) {
       context.canvas.drawCircle(
         center,
@@ -572,7 +590,16 @@ class RenderProgressBar extends RenderBox {
       );
     }
 
-    context.canvas.drawCircle(center, _effectiveThumbRadius, thumbPaint);
+    if (_thumbElevation > 0) {
+      context.canvas.drawShadow(
+        path,
+        const Color(0xFF000000),
+        _thumbElevation,
+        true,
+      );
+    }
+
+    context.canvas.drawPath(path, thumbPaint);
   }
 
   void _drawProgressIndicator(PaintingContext context, Offset offset) {
