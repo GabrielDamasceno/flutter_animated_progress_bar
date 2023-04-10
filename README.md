@@ -153,6 +153,7 @@ You can customize the ProgressBar with the following parameters:
 | `expandedBarHeight` | `double` | The greatest size of this bar. |
 | `expandedThumbRadius` | `double` | The greatest size of this thumb. |
 | `thumbGlowRadius` | `double` | The overlay drawn around the thumb. |
+| `thumbElevation` | `double` | The size of the shadow around the thumb. |
 | `thumbGlowColor` | `Color` | The color of the overlay drawn around the thumb. |
 | `backgroundBarColor` | `Color` | The color of the bar in background. |
 | `collapsedProgressBarColor` | `Color` | The color of the collapsed progress bar. |
