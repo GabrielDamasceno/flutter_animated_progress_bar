@@ -2,8 +2,18 @@
 
 <div align="center">
 
-  <a href="https://pub.dev/packages/flutter_animated_progress_bar">![](https://img.shields.io/pub/v/flutter_animated_progress_bar)</a>
-  <a href="https://pub.dev/packages/flutter_animated_progress_bar/license">![](https://img.shields.io/github/license/gabrieldamasceno/flutter_animated_progress_bar)</a>
+  <a href="https://github.com/GabrielDamasceno/flutter_animated_progress_bar/actions/workflows/build.yaml?query=workflow%3ABuild">
+      <img src="https://github.com/gabrieldamasceno/flutter_animated_progress_bar/actions/workflows/build.yaml/badge.svg" />
+  </a>
+  <a href="https://codecov.io/gh/GabrielDamasceno/flutter_animated_progress_bar" >
+    <img src="https://codecov.io/gh/GabrielDamasceno/flutter_animated_progress_bar/branch/master/graph/badge.svg"/> 
+  </a>
+  <a href="https://pub.dev/packages/flutter_animated_progress_bar">
+    <img src="https://img.shields.io/pub/v/flutter_animated_progress_bar"/>
+  </a>
+  <a href="https://pub.dev/packages/flutter_animated_progress_bar/license">
+    <img src="https://img.shields.io/github/license/gabrieldamasceno/flutter_animated_progress_bar" />
+  </a>
 
 </div>
 
