@@ -31,6 +31,7 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
 
   late ProgressBarAlignment _alignment;
   late BarCapShape _barCapShape;
+  late ProgressBarIndicator _progressBarIndicator;
 
   late final Color _backgroundBarColor;
   late final Color _collapsedProgressBarColor;
@@ -48,15 +49,16 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
     _controller = ProgressBarController(vsync: this);
 
     _progress = Duration.zero;
-    _buffered = Duration.zero;
+    _buffered = const Duration(seconds: 45);
     _total = const Duration(minutes: 1);
 
     _showBounds = true;
     _lerpColors = true;
-    _showBufferedWhenCollapsed = true;
+    _showBufferedWhenCollapsed = false;
 
     _alignment = ProgressBarAlignment.center;
     _barCapShape = BarCapShape.square;
+    _progressBarIndicator = const RoundedRectangularProgressBarIndicator();
 
     _backgroundBarColor = Colors.grey;
     _collapsedProgressBarColor = Colors.red;
@@ -88,24 +90,24 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _Duration(label: 'Progress', duration: _progress),
-                  _Duration(label: 'Buffered', duration: _buffered),
-                  _Duration(label: 'Total', duration: _total),
+                  PlaygroundDuration(label: 'Progress', duration: _progress),
+                  PlaygroundDuration(label: 'Buffered', duration: _buffered),
+                  PlaygroundDuration(label: 'Total', duration: _total),
                 ],
               ),
               const SizedBox(width: 20.0),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _Duration(
+                  PlaygroundDuration(
                     label: 'Bar duration',
                     duration: _controller.barAnimationDuration,
                   ),
-                  _Duration(
+                  PlaygroundDuration(
                     label: 'Thumb duration',
                     duration: _controller.thumbAnimationDuration,
                   ),
-                  _Duration(
+                  PlaygroundDuration(
                     label: 'Waiting duration',
                     duration: _controller.waitingDuration,
                   ),
@@ -174,6 +176,7 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
                 expandedBarHeight: 10.0,
                 alignment: _alignment,
                 barCapShape: _barCapShape,
+                progressBarIndicator: _progressBarIndicator,
                 lerpColorsTransition: _lerpColors,
                 showBufferedWhenCollapsed: _showBufferedWhenCollapsed,
                 backgroundBarColor: _backgroundBarColor,
@@ -226,6 +229,38 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
               ),
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Indicator:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 10.0),
+              DropdownButton(
+                value: _progressBarIndicator,
+                items: const [
+                  DropdownMenuItem(
+                    value: ProgressBarIndicator.none,
+                    child: Text('none'),
+                  ),
+                  DropdownMenuItem(
+                    value: RoundedRectangularProgressBarIndicator(),
+                    child: Text('rectangular'),
+                  ),
+                  DropdownMenuItem(
+                    value: CircularProgressBarIndicator(),
+                    child: Text('circular'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() => _progressBarIndicator = value!);
+                },
+              ),
+            ],
+          ),
           _Tile(
             label: 'Show bounds',
             value: _showBounds,
@@ -243,93 +278,17 @@ class _PlaygroundState extends State<Playground> with TickerProviderStateMixin {
               () => _showBufferedWhenCollapsed = !_showBufferedWhenCollapsed,
             ),
           ),
-          _ValueTracker(
-            label: 'Progress',
-            value: _progress.inMicroseconds / _total.inMicroseconds,
-            onChanged: (value) {
-              setState(
-                () => _progress = Duration(
-                    microseconds: (value * _total.inMicroseconds).round()),
-              );
-            },
-          ),
-          _ValueTracker(
-            label: 'Buffered',
-            value: _buffered.inMicroseconds / _total.inMicroseconds,
-            onChanged: (value) {
-              setState(() {
-                _buffered = Duration(
-                  microseconds: (value * _total.inMicroseconds).round(),
-                );
-              });
-            },
-          ),
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return _ValueTracker(
-                label: 'Bar Animation',
-                value: _controller.barValue,
-                onChanged: (value) => _controller.barValue = value,
-              );
-            },
-          ),
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return _ValueTracker(
-                label: 'Thumb Animation',
-                value: _controller.thumbValue,
-                onChanged: (value) => _controller.thumbValue = value,
-              );
-            },
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _Button(
-                    label: 'Forward',
-                    onPressed: () => _controller.forward(),
-                  ),
-                  _Button(
-                    label: 'Expand bar',
-                    onPressed: () => _controller.expandBar(),
-                  ),
-                  _Button(
-                    label: 'Collapse bar',
-                    onPressed: () => _controller.collapseBar(),
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  _Button(
-                    label: 'Expand thumb',
-                    onPressed: () => _controller.expandThumb(),
-                  ),
-                  _Button(
-                    label: 'Collapse thumb',
-                    onPressed: () => _controller.collapseThumb(),
-                  ),
-                ],
-              ),
-            ],
-          ),
         ],
       ),
     );
   }
 }
 
-class _Duration extends StatelessWidget {
+class PlaygroundDuration extends StatelessWidget {
   final String label;
   final Duration duration;
 
-  const _Duration({
+  const PlaygroundDuration({
     super.key,
     required this.label,
     required this.duration,
@@ -410,70 +369,6 @@ class _Tile extends StatelessWidget {
       title: Text(label),
       value: value,
       onChanged: onChanged,
-    );
-  }
-}
-
-class _Button extends StatelessWidget {
-  final String label;
-  final Future<void> Function() onPressed;
-
-  const _Button({
-    super.key,
-    required this.label,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      child: SizedBox(
-        width: 150.0,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          child: Text(label),
-        ),
-      ),
-    );
-  }
-}
-
-class _ValueTracker extends StatelessWidget {
-  final String label;
-  final double value;
-  final ValueChanged<double> onChanged;
-
-  const _ValueTracker({
-    super.key,
-    required this.label,
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Slider(value: value, onChanged: onChanged),
-        ),
-        Expanded(
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: '$label:\n',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              children: [
-                TextSpan(
-                  text: value.toStringAsFixed(4),
-                  style: const TextStyle(fontWeight: FontWeight.normal),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

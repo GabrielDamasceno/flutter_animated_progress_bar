@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/basic_types.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/controller.dart';
 import 'package:flutter_animated_progress_bar/src/foundation/enums.dart';
@@ -23,6 +22,7 @@ class RenderProgressBar extends RenderBox {
     required double collapsedThumbRadius,
     required double expandedBarHeight,
     required double expandedThumbRadius,
+    required double thumbElevation,
     required double thumbGlowRadius,
     required Color thumbGlowColor,
     required Color backgroundBarColor,
@@ -34,6 +34,7 @@ class RenderProgressBar extends RenderBox {
     required Color collapsedThumbColor,
     required bool lerpColorsTransition,
     required bool showBufferedWhenCollapsed,
+    required bool automaticallyHandleAnimations,
     required this.progressBarState,
     required this.onSeek,
     this.onChanged,
@@ -55,6 +56,7 @@ class RenderProgressBar extends RenderBox {
         _expandedProgressBarColor = expandedProgressBarColor,
         _expandedBufferedBarColor = expandedBufferedBarColor,
         _expandedThumbColor = expandedThumbColor,
+        _thumbElevation = thumbElevation,
         _thumbGlowRadius = thumbGlowRadius,
         _thumbGlowColor = thumbGlowColor,
         _collapsedProgressBarColor = collapsedProgressBarColor,
@@ -62,6 +64,7 @@ class RenderProgressBar extends RenderBox {
         _collapsedThumbColor = collapsedThumbColor,
         _lerpColorsTransition = lerpColorsTransition,
         _showBufferedWhenCollapsed = showBufferedWhenCollapsed,
+        _automaticallyHandleAnimations = automaticallyHandleAnimations,
         _semanticsFormatter = semanticsFormatter {
     _progressTextPainter = TextPainter();
     _horizontalDragGestureRecognizer = HorizontalDragGestureRecognizer()
@@ -197,6 +200,15 @@ class RenderProgressBar extends RenderBox {
     markNeedsLayout();
   }
 
+  late double _thumbElevation;
+  double get thumbElevation => _thumbElevation;
+  set thumbElevation(double newValue) {
+    if (_thumbElevation == newValue) return;
+
+    _thumbElevation = newValue;
+    markNeedsPaint();
+  }
+
   late double _thumbGlowRadius;
   double get thumbGlowRadius => _thumbGlowRadius;
   set thumbGlowRadius(double newValue) {
@@ -296,6 +308,15 @@ class RenderProgressBar extends RenderBox {
     markNeedsPaint();
   }
 
+  late bool _automaticallyHandleAnimations;
+  bool get automaticallyHandleAnimations => _automaticallyHandleAnimations;
+  set automaticallyHandleAnimations(bool newValue) {
+    if (_automaticallyHandleAnimations == newValue) return;
+
+    _automaticallyHandleAnimations = newValue;
+    markNeedsLayout();
+  }
+
   late SemanticsFormatter? _semanticsFormatter;
   SemanticsFormatter? get semanticsFormatter => _semanticsFormatter;
   set semanticsFormatter(SemanticsFormatter? newValue) {
@@ -321,8 +342,10 @@ class RenderProgressBar extends RenderBox {
     _isDragging = true;
     _position = _clampPositionBySize(details.localPosition);
 
-    _controller.expandBar();
-    _controller.expandThumb();
+    if (automaticallyHandleAnimations) {
+      _controller.expandBar();
+      _controller.expandThumb();
+    }
 
     onChangeStart?.call(_positionToDuration(_position.dx));
 
@@ -341,8 +364,9 @@ class RenderProgressBar extends RenderBox {
     _isDragging = false;
     _progress = _positionToDuration(_position.dx);
 
-    _controller.forward();
-    _controller.collapseThumb();
+    if (automaticallyHandleAnimations) {
+      _controller.forward();
+    }
 
     onChangeEnd?.call(_progress);
     onSeek.call(_progress);
@@ -354,7 +378,9 @@ class RenderProgressBar extends RenderBox {
     final double localPosition = _clampLocalPosition(details.localPosition.dx);
     _progress = _positionToDuration(localPosition);
 
-    _controller.forward();
+    if (automaticallyHandleAnimations) {
+      _controller.forward();
+    }
 
     onChanged?.call(_progress);
     onSeek.call(_progress);
@@ -548,6 +574,14 @@ class RenderProgressBar extends RenderBox {
     );
     final Offset center = Offset(dx, _position.dy) + offset;
 
+    final Path path = Path()
+      ..addOval(
+        Rect.fromCircle(
+          center: center,
+          radius: _effectiveThumbRadius,
+        ),
+      );
+
     if (_thumbGlowRadius > 0.0) {
       context.canvas.drawCircle(
         center,
@@ -556,7 +590,16 @@ class RenderProgressBar extends RenderBox {
       );
     }
 
-    context.canvas.drawCircle(center, _effectiveThumbRadius, thumbPaint);
+    if (_thumbElevation > 0) {
+      context.canvas.drawShadow(
+        path,
+        const Color(0xFF000000),
+        _thumbElevation,
+        true,
+      );
+    }
+
+    context.canvas.drawPath(path, thumbPaint);
   }
 
   void _drawProgressIndicator(PaintingContext context, Offset offset) {

@@ -1,4 +1,5 @@
 import 'package:example/ui/audio_example.dart';
+import 'package:example/ui/controller_playground.dart';
 import 'package:example/ui/playground.dart';
 import 'package:example/ui/alignment_example.dart';
 import 'package:example/ui/simple_example.dart';
@@ -34,6 +35,10 @@ class HomeScreen extends StatelessWidget {
             ElevatedButton(
               child: const Text('Playground'),
               onPressed: () => Playground.route(context),
+            ),
+            ElevatedButton(
+              child: const Text('Controller Playground'),
+              onPressed: () => ControllerPlayground.route(context),
             ),
           ],
         ),

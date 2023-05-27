@@ -16,50 +16,54 @@ void main() {
       ..platformDispatcher.onDrawFrame = null;
   });
 
-  group('ProgressBarController.forward():', () {
-    test('Should expand, wait and than collapse progress bar.', () {
-      final ProgressBarController controller = ProgressBarController(
-        barAnimationDuration: barAnimationDuration,
-        thumbAnimationDuration: thumbAnimationDuration,
-        waitingDuration: waitingDuration,
-        vsync: const TestVSync(),
-      );
+  group('[forward]:', () {
+    test(
+      'Should expand, wait and than collapse progress bar.',
+      () {
+        final ProgressBarController controller = ProgressBarController(
+          barAnimationDuration: barAnimationDuration,
+          thumbAnimationDuration: thumbAnimationDuration,
+          waitingDuration: waitingDuration,
+          vsync: const TestVSync(),
+        );
 
-      controller.forward();
+        /// With default values
+        controller.forward();
 
-      /// Expanding bar
-      for (final fraction in fractions) {
-        final int microseconds =
-            (barAnimationDuration.inMicroseconds * fraction).round();
-        tick(Duration(microseconds: microseconds));
-        expect(controller.barValue, moreOrLessEquals(fraction));
-        expect(controller.thumbValue, 0.0);
-      }
+        /// Expanding bar
+        for (final fraction in fractions) {
+          final int microseconds =
+              (barAnimationDuration.inMicroseconds * fraction).round();
+          tick(Duration(microseconds: microseconds));
+          expect(controller.barValue, moreOrLessEquals(fraction));
+          expect(controller.thumbValue, 0.0);
+        }
 
-      /// Waiting
-      for (final fraction in fractions) {
-        final int microseconds = barAnimationDuration.inMicroseconds +
-            (waitingDuration.inMicroseconds * fraction).round();
-        tick(Duration(microseconds: microseconds));
-        expect(controller.barValue, moreOrLessEquals(1.0));
-        expect(controller.thumbValue, 0.0);
-      }
+        /// Waiting
+        for (final fraction in fractions) {
+          final int microseconds = barAnimationDuration.inMicroseconds +
+              (waitingDuration.inMicroseconds * fraction).round();
+          tick(Duration(microseconds: microseconds));
+          expect(controller.barValue, moreOrLessEquals(1.0));
+          expect(controller.thumbValue, 0.0);
+        }
 
-      /// Collapsing bar
-      for (final fraction in fractions) {
-        final int microseconds = barAnimationDuration.inMicroseconds +
-            waitingDuration.inMicroseconds +
-            (barAnimationDuration.inMicroseconds * fraction).round();
-        tick(Duration(microseconds: microseconds));
-        expect(controller.barValue, moreOrLessEquals(1.0 - fraction));
-        expect(controller.thumbValue, 0.0);
-      }
+        /// Collapsing bar
+        for (final fraction in fractions) {
+          final int microseconds = barAnimationDuration.inMicroseconds +
+              waitingDuration.inMicroseconds +
+              (barAnimationDuration.inMicroseconds * fraction).round();
+          tick(Duration(microseconds: microseconds));
+          expect(controller.barValue, moreOrLessEquals(1.0 - fraction));
+          expect(controller.thumbValue, 0.0);
+        }
 
-      controller.dispose();
-    });
+        controller.dispose();
+      },
+    );
 
     test(
-      'If already animating, should start a new animation from relative value with remaining duration',
+      'If already animating, should start a new animation from relative value with remaining duration.',
       () {
         final ProgressBarController controller = ProgressBarController(
           barAnimationDuration: barAnimationDuration,
@@ -96,116 +100,147 @@ void main() {
       },
     );
 
-    test('Should throw an error if called with a disposed controller', () {
-      final ProgressBarController controller = ProgressBarController(
-        barAnimationDuration: barAnimationDuration,
-        thumbAnimationDuration: thumbAnimationDuration,
-        waitingDuration: waitingDuration,
-        vsync: const TestVSync(),
-      );
+    test(
+      'Should handle curves accordingly.',
+      () {
+        final ProgressBarController controller = ProgressBarController(
+          barAnimationDuration: barAnimationDuration,
+          thumbAnimationDuration: thumbAnimationDuration,
+          waitingDuration: waitingDuration,
+          vsync: const TestVSync(),
+        );
 
-      controller.dispose();
-      tick(Duration.zero);
+        controller.dispose();
+        tick(Duration.zero);
 
-      expect(controller.forward, throwsAssertionError);
-    });
+        expect(controller.forward, throwsAssertionError);
+      },
+    );
+
+    test(
+      'Should throw an error if called with a disposed controller',
+      () {
+        final ProgressBarController controller = ProgressBarController(
+          barAnimationDuration: barAnimationDuration,
+          thumbAnimationDuration: thumbAnimationDuration,
+          waitingDuration: waitingDuration,
+          vsync: const TestVSync(),
+        );
+
+        controller.dispose();
+        tick(Duration.zero);
+
+        expect(controller.forward, throwsAssertionError);
+      },
+    );
   });
 
-  group('ProgressBarController.expandBar():', () {
-    test('Should increase barValue accordingly', () {
-      final ProgressBarController controller = ProgressBarController(
-        barAnimationDuration: barAnimationDuration,
-        thumbAnimationDuration: thumbAnimationDuration,
-        waitingDuration: waitingDuration,
-        vsync: const TestVSync(),
-      );
+  group('[expandBar]:', () {
+    test(
+      'Should increase barValue accordingly',
+      () {
+        final ProgressBarController controller = ProgressBarController(
+          barAnimationDuration: barAnimationDuration,
+          thumbAnimationDuration: thumbAnimationDuration,
+          waitingDuration: waitingDuration,
+          vsync: const TestVSync(),
+        );
 
-      controller.expandBar();
+        controller.expandBar();
 
-      for (final fraction in fractions) {
-        final int microseconds =
-            (barAnimationDuration.inMicroseconds * fraction).round();
-        tick(Duration(microseconds: microseconds));
-        expect(controller.barValue, moreOrLessEquals(fraction));
+        for (final fraction in fractions) {
+          final int microseconds =
+              (barAnimationDuration.inMicroseconds * fraction).round();
+          tick(Duration(microseconds: microseconds));
+          expect(controller.barValue, moreOrLessEquals(fraction));
+          expect(controller.thumbValue, 0.0);
+        }
+
+        controller.dispose();
+      },
+    );
+
+    test(
+      'If already animating, should start a new animation from relative value with remaining duration',
+      () {
+        final ProgressBarController controller = ProgressBarController(
+          barAnimationDuration: barAnimationDuration,
+          thumbAnimationDuration: thumbAnimationDuration,
+          waitingDuration: waitingDuration,
+          vsync: const TestVSync(),
+        );
+
+        controller.barValue = 1.0;
+        tick(Duration.zero);
+
+        controller.collapseBar();
+        tick(Duration(
+            microseconds:
+                (barAnimationDuration.inMicroseconds * 0.25).round()));
+
+        controller.expandBar();
+        tick(Duration.zero);
+        tick(Duration(
+            microseconds:
+                (barAnimationDuration.inMicroseconds * 0.25).round()));
+        expect(controller.barValue, moreOrLessEquals(1.0));
         expect(controller.thumbValue, 0.0);
-      }
 
-      controller.dispose();
-    });
-
-    test(
-        'If already animating, should start a new animation from relative value with remaining duration',
-        () {
-      final ProgressBarController controller = ProgressBarController(
-        barAnimationDuration: barAnimationDuration,
-        thumbAnimationDuration: thumbAnimationDuration,
-        waitingDuration: waitingDuration,
-        vsync: const TestVSync(),
-      );
-
-      controller.barValue = 1.0;
-      tick(Duration.zero);
-
-      controller.collapseBar();
-      tick(Duration(
-          microseconds: (barAnimationDuration.inMicroseconds * 0.25).round()));
-
-      controller.expandBar();
-      tick(Duration.zero);
-      tick(Duration(
-          microseconds: (barAnimationDuration.inMicroseconds * 0.25).round()));
-      expect(controller.barValue, moreOrLessEquals(1.0));
-      expect(controller.thumbValue, 0.0);
-
-      controller.dispose();
-    });
+        controller.dispose();
+      },
+    );
 
     test(
-        'If value is not at target, should throw an error if called with a disposed controller',
-        () {
-      final ProgressBarController controller = ProgressBarController(
-        barAnimationDuration: barAnimationDuration,
-        thumbAnimationDuration: thumbAnimationDuration,
-        waitingDuration: waitingDuration,
-        vsync: const TestVSync(),
-      );
+      'If value is not at target, should throw an error if called with a disposed controller',
+      () {
+        final ProgressBarController controller = ProgressBarController(
+          barAnimationDuration: barAnimationDuration,
+          thumbAnimationDuration: thumbAnimationDuration,
+          waitingDuration: waitingDuration,
+          vsync: const TestVSync(),
+        );
 
-      controller.dispose();
-      tick(Duration.zero);
+        controller.dispose();
+        tick(Duration.zero);
 
-      expect(controller.expandBar, throwsAssertionError);
-    });
+        expect(controller.expandBar, throwsAssertionError);
+      },
+    );
 
-    test('Do not animate if already at target', () {
-      int notifications = 0;
-      final ProgressBarController controller = ProgressBarController(
-        barAnimationDuration: barAnimationDuration,
-        thumbAnimationDuration: thumbAnimationDuration,
-        waitingDuration: waitingDuration,
-        vsync: const TestVSync(),
-      )..addListener(() {
-          notifications += 1;
-        });
+    test(
+      'Do not animate if already at target',
+      () {
+        int notifications = 0;
+        final ProgressBarController controller = ProgressBarController(
+          barAnimationDuration: barAnimationDuration,
+          thumbAnimationDuration: thumbAnimationDuration,
+          waitingDuration: waitingDuration,
+          vsync: const TestVSync(),
+        )..addListener(() {
+            notifications += 1;
+          });
 
-      /// Setting this value here will trigger one notification
-      controller.barValue = 1.0;
-      tick(Duration.zero);
+        /// Setting this value here will trigger one notification
+        controller.barValue = 1.0;
+        tick(Duration.zero);
 
-      controller.expandBar();
+        controller.expandBar();
 
-      expect(controller.barValue, equals(1.0));
-      expect(notifications, equals(1));
+        expect(controller.barValue, equals(1.0));
+        expect(notifications, equals(1));
 
-      tick(Duration(
-          microseconds: (barAnimationDuration.inMicroseconds * 0.50).round()));
-      expect(controller.barValue, equals(1.0));
-      expect(notifications, equals(1));
+        tick(Duration(
+            microseconds:
+                (barAnimationDuration.inMicroseconds * 0.50).round()));
+        expect(controller.barValue, equals(1.0));
+        expect(notifications, equals(1));
 
-      controller.dispose();
-    });
+        controller.dispose();
+      },
+    );
   });
 
-  group('ProgressBarController.collapseBar():', () {
+  group('[collapseBar]:', () {
     test('Should decrease barValue accordingly', () {
       final ProgressBarController controller = ProgressBarController(
         barAnimationDuration: barAnimationDuration,

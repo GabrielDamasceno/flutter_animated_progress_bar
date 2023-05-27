@@ -83,6 +83,7 @@ class ProgressBar extends StatefulWidget {
     this.expandedBarHeight = 7.0,
     this.expandedThumbRadius = 10.0,
     this.thumbGlowRadius = 25.0,
+    this.thumbElevation = 1.0,
     this.thumbGlowColor = const Color(0x50FFFFFF),
     this.backgroundBarColor = Colors.grey,
     this.collapsedProgressBarColor = Colors.red,
@@ -93,6 +94,7 @@ class ProgressBar extends StatefulWidget {
     this.expandedThumbColor,
     this.lerpColorsTransition = true,
     this.showBufferedWhenCollapsed = true,
+    this.automaticallyHandleAnimations = true,
     required this.onSeek,
     this.onChanged,
     this.onChangeStart,
@@ -135,6 +137,11 @@ class ProgressBar extends StatefulWidget {
   /// Defaults to `BarCapShape.square`.
   final BarCapShape barCapShape;
 
+  /// The indicator that appears above the thumb.
+  ///
+  /// To disable the indicator, set this value to `ProgressBarIndicator.none`.
+  ///
+  /// Defaults to `RoundedRectangularProgressBarIndicator`.
   final ProgressBarIndicator progressBarIndicator;
 
   /// The smallest size of this bar.
@@ -172,6 +179,11 @@ class ProgressBar extends StatefulWidget {
   ///
   /// Defaults to `25.0`.
   final double thumbGlowRadius;
+
+  /// The size of the shadow drawn around the thumb.
+  ///
+  /// Defaults to `1.0`.
+  final double thumbElevation;
 
   /// The color of the overlay drawn around the thumb. This is typically a semi-transparent color.
   final Color thumbGlowColor;
@@ -213,6 +225,15 @@ class ProgressBar extends StatefulWidget {
   ///
   /// Defaults to `true`.
   final bool showBufferedWhenCollapsed;
+
+  /// Whether animations should be handled automatically.
+  /// By default, it will be handled by gesture interactions using
+  /// `Curves.linear` for all animations.
+  ///
+  /// You can disable this behavior and use the callbacks for full control of animations.
+  ///
+  /// Defaults to `true`.
+  final bool automaticallyHandleAnimations;
 
   /// A callback that is called when the user taps or stops dragging.
   ///
@@ -293,6 +314,7 @@ class ProgressBarState extends State<ProgressBar> {
         expandedBarHeight: widget.expandedBarHeight,
         expandedThumbRadius: widget.expandedThumbRadius,
         thumbGlowRadius: widget.thumbGlowRadius,
+        thumbElevation: widget.thumbElevation,
         thumbGlowColor: widget.thumbGlowColor,
         backgroundBarColor: widget.backgroundBarColor,
         collapsedProgressBarColor: widget.collapsedProgressBarColor,
@@ -303,6 +325,7 @@ class ProgressBarState extends State<ProgressBar> {
         expandedThumbColor: widget.expandedThumbColor,
         lerpColorsTransition: widget.lerpColorsTransition,
         showBufferedWhenCollapsed: widget.showBufferedWhenCollapsed,
+        automaticallyHandleAnimations: widget.automaticallyHandleAnimations,
         progressBarState: this,
         onSeek: widget.onSeek,
         onChanged: (position) {

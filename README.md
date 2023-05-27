@@ -1,4 +1,23 @@
-# flutter_animated_progress_bar
+<h1 align="center"> Animated Progress Bar </h1>
+
+<div align="center">
+
+  <a href="https://github.com/GabrielDamasceno/flutter_animated_progress_bar/actions/workflows/build.yaml?query=workflow%3ABuild">
+      <img src="https://github.com/gabrieldamasceno/flutter_animated_progress_bar/actions/workflows/build.yaml/badge.svg" />
+  </a>
+  <a href="https://codecov.io/gh/GabrielDamasceno/flutter_animated_progress_bar" >
+    <img src="https://codecov.io/gh/GabrielDamasceno/flutter_animated_progress_bar/branch/master/graph/badge.svg"/> 
+  </a>
+  <a href="https://pub.dev/packages/flutter_animated_progress_bar">
+    <img src="https://img.shields.io/pub/v/flutter_animated_progress_bar"/>
+  </a>
+  <a href="https://pub.dev/packages/flutter_animated_progress_bar/license">
+    <img src="https://img.shields.io/github/license/gabrieldamasceno/flutter_animated_progress_bar" />
+  </a>
+
+</div>
+
+<br>
 
 <p align='center'> An animated progress bar widget designed to be used with video or audio. </p>
 
@@ -121,6 +140,11 @@ _controller.stopBarAnimation();             // Stop bar animation, if running.
 _controller.expandThumb();                  // Expand the thumb.
 _controller.collapseThumb();                // Collapse the thumb.
 _controller.stopThumbAnimation();           // Stop thumb animation, if running.
+
+_controller.expandBar(                      // Expand bar with custom
+  duration: const Duration(seconds:1),      // duration and curve.
+  curve: Curves.easeIn,
+);
 ```
 
 The methods that start animations return a [TickerFuture](https://api.flutter.dev/flutter/scheduler/TickerFuture-class.html) object which completes when the animation completes successfully. Which means that you can `await` for them to finish.
@@ -139,6 +163,7 @@ You can customize the ProgressBar with the following parameters:
 | `expandedBarHeight` | `double` | The greatest size of this bar. |
 | `expandedThumbRadius` | `double` | The greatest size of this thumb. |
 | `thumbGlowRadius` | `double` | The overlay drawn around the thumb. |
+| `thumbElevation` | `double` | The size of the shadow around the thumb. |
 | `thumbGlowColor` | `Color` | The color of the overlay drawn around the thumb. |
 | `backgroundBarColor` | `Color` | The color of the bar in background. |
 | `collapsedProgressBarColor` | `Color` | The color of the collapsed progress bar. |

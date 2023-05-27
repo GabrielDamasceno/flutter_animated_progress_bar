@@ -55,6 +55,7 @@ class RoundedRectangularProgressBarIndicator extends ProgressBarIndicator {
     this.padding = const EdgeInsets.all(8.0),
     this.curve = Curves.fastOutSlowIn,
     this.borderRadius = const Radius.circular(4.0),
+    this.elevation = 1.0,
     this.backgroundColor = Colors.red,
     this.style,
     this.durationFormatter,
@@ -63,6 +64,7 @@ class RoundedRectangularProgressBarIndicator extends ProgressBarIndicator {
   final EdgeInsets padding;
   final Curve curve;
   final Radius borderRadius;
+  final double elevation;
   final Color backgroundColor;
   final TextStyle? style;
   final DurationFormatter? durationFormatter;
@@ -142,8 +144,24 @@ class RoundedRectangularProgressBarIndicator extends ProgressBarIndicator {
       -textPainter.height / 2,
     );
 
+    final Path shadowPath = Path.combine(
+      PathOperation.union,
+      trianglePath,
+      Path()..addRRect(rRect),
+    );
+
     canvas.save();
     canvas.transform(scaleTransformation.storage);
+
+    if (elevation > 0) {
+      canvas.drawShadow(
+        shadowPath,
+        const Color(0xFF000000),
+        elevation,
+        true,
+      );
+    }
+
     canvas.drawPath(trianglePath, paint);
     canvas.drawRRect(rRect, paint);
     textPainter.paint(canvas, textCenter);
@@ -157,6 +175,7 @@ class CircularProgressBarIndicator extends ProgressBarIndicator {
   const CircularProgressBarIndicator({
     this.padding = const EdgeInsets.symmetric(horizontal: 5.0),
     this.curve = Curves.fastOutSlowIn,
+    this.elevation = 1.0,
     this.backgroundColor = Colors.red,
     this.style,
     this.durationFormatter,
@@ -164,6 +183,7 @@ class CircularProgressBarIndicator extends ProgressBarIndicator {
 
   final EdgeInsets padding;
   final Curve curve;
+  final double elevation;
   final Color backgroundColor;
   final TextStyle? style;
   final DurationFormatter? durationFormatter;
@@ -266,8 +286,24 @@ class CircularProgressBarIndicator extends ProgressBarIndicator {
       -textPainter.height / 2,
     );
 
+    final Path shadowPath = Path.combine(
+      PathOperation.union,
+      neckPath,
+      ovalPath,
+    );
+
     canvas.save();
     canvas.transform(scaleTransformation.storage);
+
+    if (elevation > 0) {
+      canvas.drawShadow(
+        shadowPath,
+        const Color(0xFF000000),
+        elevation,
+        true,
+      );
+    }
+
     canvas.drawPath(neckPath, paint);
     canvas.drawPath(ovalPath, paint);
     textPainter.paint(canvas, textCenter);

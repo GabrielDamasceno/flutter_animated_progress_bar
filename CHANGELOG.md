@@ -1,3 +1,13 @@
+## 1.0.5 - (2023-05-27)
+
+* Add `automaticallyHandleAnimations` option to toggle the default animation behavior.
+* Add `duration` and `curve` options in controller methods that start animations.
+* Add `thumbElevation` option to configure the size of the shadow around the thumb.
+* Add `elevation` option to progress bar indicators.
+* Update docs.
+* Update examples.
+* Update tests.
+
 ## 1.0.4 - (2023-03-29)
 
 * Add `progressBarIndicator` option to configure indicators.
