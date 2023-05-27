@@ -1,4 +1,4 @@
-## 1.0.5 - (2023-??-??)
+## 1.0.5 - (2023-05-27)
 
 * Add `automaticallyHandleAnimations` option to toggle the default animation behavior.
 * Add `duration` and `curve` options in controller methods that start animations.
@@ -6,6 +6,7 @@
 * Add `elevation` option to progress bar indicators.
 * Update docs.
 * Update examples.
+* Update tests.
 
 ## 1.0.4 - (2023-03-29)
 
